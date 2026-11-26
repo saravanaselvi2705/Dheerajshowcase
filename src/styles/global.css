@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@theme {
+  --color-obsidian: #0c0d10;
+  --color-cinema-bg: #141517;
+  --color-cinema-surface: #15171c;
+  --color-cinema-sage: #a5a79b;
+  --color-cinema-burgundy: #590907;
+  --color-cinema-burgundy-bright: #7d1110;
+  --color-cinema-cream: #e8d2b5;
+  --font-sans: "Jost", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cinzel", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  html {
+    background-color: #0c0d10;
+    color: #e8d2b5;
+    font-family: var(--font-sans);
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: #0c0d10;
+    color: #e8d2b5;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: #590907;
+    color: #e8d2b5;
+  }
+}
+
+/* Subtle film-grain SVG noise overlay */
+.cinema-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.04;
+}
+
+/* Subtle vertical studio texture echoing the reference backdrop */
+.cinema-ribbed {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(232, 210, 182, 0.018) 0px,
+    rgba(232, 210, 182, 0.018) 1px,
+    transparent 1px,
+    transparent 44px
+  );
+}
+
+/* Ambient floating dust particles */
+@keyframes dust-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate3d(6px, -14px, 0);
+    opacity: 0.65;
+  }
+}
+
+.dust-particle {
+  animation: dust-float 7s ease-in-out infinite;
+}
+
+/* Rolling 3D Cylindrical Concave Arc */
+.showcase-arc-stage {
+  perspective: 1400px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+}
+
+.showcase-arc-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  transition: border-color 200ms ease, box-shadow 220ms ease;
+}
+
+.showcase-arc-card:hover {
+  border-color: #7d1110;
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.85),
+    0 0 28px rgba(125, 17, 16, 0.45);
+}
+
+/* Scrollbar utility for compact mobile pills */
+.filmstrip-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.filmstrip-scroll::-webkit-scrollbar {
+  display: none;
+}

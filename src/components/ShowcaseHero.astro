@@ -1,0 +1,713 @@
+---
+import { Image } from 'astro:assets';
+import {
+  SHOWCASE_CUTS,
+  SHOWCASE_META,
+  SHOWCASE_SERVICES,
+  type ShowcaseCut,
+} from '../data/showcase';
+
+interface Props {
+  cuts?: ShowcaseCut[];
+}
+
+const { cuts = SHOWCASE_CUTS } = Astro.props;
+// Repeat 3x so the infinite rolling cylinder stays seamless across ultrawide screens
+const conveyorCuts = [...cuts, ...cuts, ...cuts];
+
+// Lightweight deterministic ambient particle positions
+const dustParticles = [
+  { top: '14%', left: '12%', size: '2px', delay: '0s', dur: '6.5s' },
+  { top: '22%', left: '28%', size: '1.5px', delay: '1.2s', dur: '8s' },
+  { top: '11%', left: '68%', size: '2px', delay: '2.1s', dur: '7.2s' },
+  { top: '28%', left: '84%', size: '1.5px', delay: '0.7s', dur: '9s' },
+  { top: '42%', left: '18%', size: '1.5px', delay: '3.1s', dur: '7.8s' },
+  { top: '38%', left: '76%', size: '2px', delay: '1.8s', dur: '6.8s' },
+  { top: '18%', left: '48%', size: '1.5px', delay: '2.7s', dur: '8.4s' },
+  { top: '48%', left: '91%', size: '1.5px', delay: '0.4s', dur: '7.5s' },
+  { top: '52%', left: '7%', size: '2px', delay: '1.5s', dur: '8.8s' },
+];
+---
+
+<section
+  id="showcase-stage"
+  class="relative min-h-dvh w-full overflow-x-hidden flex flex-col justify-between bg-[#0C0D10] text-[#E8D2B5] select-none"
+>
+  <!-- Faded Ambient Hero Background Video (Matches Portfolio) -->
+  <video
+    id="hero-ambient-video"
+    src="/hero-bg.mp4"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="metadata"
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-22 transition-opacity duration-700"
+  ></video>
+
+  <!-- Upper-Left Warm Ambient Spotlight Glow & Vignette -->
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="background: radial-gradient(circle at 15% 15%, rgba(89, 9, 7, 0.48) 0%, rgba(232, 210, 182, 0.08) 35%, transparent 70%), radial-gradient(circle at 50% 45%, rgba(12, 13, 16, 0.30) 0%, rgba(12, 13, 16, 0.88) 100%);"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Subtle Vertical Studio Texture & Film-Grain Noise -->
+  <div class="pointer-events-none absolute inset-0 cinema-ribbed" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute inset-0 cinema-grain" aria-hidden="true"></div>
+
+  <!-- Ambient Floating Particle Dust -->
+  <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    {
+      dustParticles.map((p) => (
+        <span
+          class="dust-particle absolute rounded-full bg-[#E8D2B5]"
+          style={`top:${p.top};left:${p.left};width:${p.size};height:${p.size};animation-delay:${p.delay};animation-duration:${p.dur};`}
+        />
+      ))
+    }
+  </div>
+
+  <!-- A. TOP FLOATING HEADER -->
+  <header class="relative z-30 mx-auto w-full max-w-[1380px] px-4 sm:px-6 pt-2.5 sm:pt-3 shrink-0">
+    <div
+      class="rounded-full border border-[#A5A79B]/20 bg-[#0C0D10]/72 backdrop-blur-xl shadow-[0_12px_36px_rgba(0,0,0,0.6)] px-4 sm:px-5 py-1.5 flex items-center justify-between gap-3"
+    >
+      <!-- Left: Brand Logo / Mark -->
+      <a
+        href="#showcase-stage"
+        class="inline-flex items-center gap-2.5 shrink-0 group"
+        aria-label="Dheeraj C — Home"
+      >
+        <span
+          class="inline-flex items-center justify-center w-5 h-5 rounded-full border border-[#A5A79B]/35 bg-[#15171C] text-[9px] text-[#7D1110]"
+          aria-hidden="true"
+        >
+          ●
+        </span>
+        <span class="font-sans text-sm sm:text-base font-semibold tracking-wide text-[#E8D2B5] group-hover:text-white transition-colors">
+          {SHOWCASE_META.brand}
+        </span>
+      </a>
+
+      <!-- Center: Subtle Status Badge -->
+      <div
+        class="hidden md:inline-flex items-center gap-2 rounded-full border border-[#A5A79B]/18 bg-[#141517]/75 px-3.5 py-1 text-xs text-[#A5A79B] tracking-wide"
+      >
+        <span class="h-1.5 w-1.5 rounded-full bg-[#7D1110] shadow-[0_0_8px_#7D1110]" aria-hidden="true"></span>
+        <span>{SHOWCASE_META.statusBadge}</span>
+      </div>
+
+      <!-- Right: Burgundy Pill CTA -->
+      <a
+        href={SHOWCASE_META.whatsappHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1.5 rounded-full bg-[#590907] hover:bg-[#7D1110] border border-[#E8D2B5]/20 px-4 py-1.5 text-xs font-semibold tracking-wide text-[#E8D2B5] shadow-[0_6px_20px_rgba(89,9,7,0.5)] transition-all hover:-translate-y-0.5 shrink-0"
+      >
+        <span>WhatsApp / Let&apos;s Talk</span>
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- B. INTRO / VALUE PROPOSITION (Above the Arc) -->
+  <div class="relative z-20 mx-auto w-full max-w-4xl px-4 sm:px-6 pt-2 sm:pt-3 pb-1 text-center flex flex-col items-center shrink-0">
+    <!-- Kicker Tag -->
+    <div
+      class="inline-flex items-center gap-2 rounded-full border border-[#A5A79B]/28 bg-[#15171C]/75 backdrop-blur-md px-3 py-0.5 text-[10px] font-mono uppercase tracking-[0.2em] text-[#E8D2B5] mb-2"
+    >
+      <span class="h-1.5 w-1.5 rounded-full bg-[#7D1110]" aria-hidden="true"></span>
+      <span>{SHOWCASE_META.kicker}</span>
+    </div>
+
+    <!-- Primary Headline -->
+    <h1
+      class="font-sans font-bold tracking-[-0.02em] leading-[1.08] text-[#E8D2B5] max-w-4xl"
+      style="font-size: clamp(1.5rem, min(3.3vw, 4.9dvh), 3rem);"
+    >
+      {SHOWCASE_META.headline}
+    </h1>
+
+    <!-- Subheadline -->
+    <p class="mt-2 max-w-2xl text-xs sm:text-sm text-[#A5A79B] leading-snug sm:leading-relaxed">
+      {SHOWCASE_META.subheadline}
+    </p>
+
+    <!-- CTA Row -->
+    <div class="mt-3 sm:mt-3.5 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+      <a
+        href={SHOWCASE_META.whatsappHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-full bg-[#590907] hover:bg-[#7D1110] border border-[#E8D2B5]/20 px-5 py-2 text-xs sm:text-sm font-semibold tracking-wide text-[#E8D2B5] shadow-[0_10px_28px_rgba(89,9,7,0.55)] transition-all hover:-translate-y-0.5"
+      >
+        <span>Book an Edit</span>
+        <span aria-hidden="true">↗</span>
+      </a>
+
+      <a
+        href={SHOWCASE_META.portfolioUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-full border border-[#A5A79B]/35 hover:border-[#E8D2B5]/75 bg-[#15171C]/55 backdrop-blur-md px-5 py-2 text-xs sm:text-sm font-medium tracking-wide text-[#E8D2B5] transition-all hover:-translate-y-0.5"
+      >
+        <span>Full Portfolio / Resume</span>
+        <span aria-hidden="true" class="text-[#A5A79B]">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- C. ROLLING 3D CURVED PERSPECTIVE VIDEO ARC -->
+  <div
+    id="rolling-arc-region"
+    data-unique-count={cuts.length}
+    class="relative z-20 w-full flex-1 min-h-[205px] flex items-center justify-center overflow-hidden"
+  >
+    <!-- Side Gradient Fades into Obsidian -->
+    <div
+      class="pointer-events-none absolute inset-y-0 left-0 w-10 sm:w-20 z-30 bg-gradient-to-r from-[#0C0D10] via-[#0C0D10]/55 to-transparent"
+      aria-hidden="true"
+    ></div>
+    <div
+      class="pointer-events-none absolute inset-y-0 right-0 w-10 sm:w-20 z-30 bg-gradient-to-l from-[#0C0D10] via-[#0C0D10]/55 to-transparent"
+      aria-hidden="true"
+    ></div>
+
+    <!-- 3D Perspective Stage -->
+    <div
+      id="rolling-arc-stage"
+      class="showcase-arc-stage relative w-full h-[clamp(205px,37dvh,320px)] cursor-grab active:cursor-grabbing touch-pan-y"
+      role="region"
+      aria-label="Rolling 3D curved video showcase"
+    >
+      {
+        conveyorCuts.map((cut, idx) => (
+          <button
+            type="button"
+            data-arc-item
+            data-slot={idx}
+            data-id={cut.id}
+            data-drive-id={cut.driveFileId}
+            data-title={cut.title}
+            data-client={cut.client}
+            data-category={cut.category}
+            data-badge={cut.badgeLabel}
+            data-aspect={cut.aspect}
+            data-duration={cut.duration}
+            data-role={cut.role}
+            data-stream-url={cut.streamUrl}
+            data-preview-url={cut.previewUrl}
+            aria-label={`Play ${cut.title} (${cut.badgeLabel}, ${cut.duration})`}
+            class="showcase-arc-card group w-[clamp(128px,22.5dvh,202px)] h-[clamp(176px,31dvh,278px)] rounded-2xl border border-[#A5A79B]/22 bg-[#141517] overflow-hidden text-left shadow-[0_18px_46px_rgba(0,0,0,0.82)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8D2B5]"
+          >
+            {/* Lightweight Astro-Optimized WebP Poster (Zero Video Preload) */}
+            <Image
+              src={cut.thumbnail}
+              alt={`${cut.title} — ${cut.badgeLabel} thumbnail`}
+              widths={[320, 480]}
+              sizes="(max-width: 640px) 160px, 220px"
+              format="webp"
+              loading={idx < 8 ? 'eager' : 'lazy'}
+              decoding="async"
+              draggable="false"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 pointer-events-none"
+            />
+
+            {/* Cinema Card Vignette */}
+            <div
+              class="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0C0D10]/95 via-[#0C0D10]/15 to-[#0C0D10]/45"
+              aria-hidden="true"
+            ></div>
+
+            {/* Top Badges: Category & Duration Timecode */}
+            <div class="pointer-events-none absolute top-2.5 inset-x-2.5 flex items-center justify-between gap-1.5">
+              <span class="rounded-full border border-[#A5A79B]/35 bg-[#0C0D10]/78 backdrop-blur-sm px-2 py-0.5 text-[9px] sm:text-[10px] font-medium uppercase tracking-wider text-[#E8D2B5] truncate">
+                {cut.badgeLabel}
+              </span>
+              <span class="rounded border border-[#A5A79B]/25 bg-[#0C0D10]/80 backdrop-blur-sm px-1.5 py-0.5 font-mono text-[9px] sm:text-[10px] text-[#E8D2B5] tabular-nums shrink-0">
+                {cut.duration}
+              </span>
+            </div>
+
+            {/* Center Translucent Play Icon */}
+            <div
+              class="pointer-events-none absolute inset-0 flex items-center justify-center"
+              aria-hidden="true"
+            >
+              <span class="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#0C0D10]/55 group-hover:bg-[#7D1110]/90 border border-[#E8D2B5]/45 group-hover:border-[#E8D2B5]/80 text-[#E8D2B5] backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.65)] transition-all duration-200 group-hover:scale-110">
+                <svg viewBox="0 0 24 24" class="w-4 h-4 ml-0.5 fill-current">
+                  <path d="M8 5.14v14l11-7-11-7z" />
+                </svg>
+              </span>
+            </div>
+
+            {/* Bottom Cut Title */}
+            <div class="pointer-events-none absolute bottom-0 inset-x-0 p-2.5 sm:p-3">
+              <p class="font-mono text-[9px] uppercase tracking-wider text-[#A5A79B] truncate">
+                {cut.client} · {cut.aspect}
+              </p>
+              <h2 class="mt-0.5 text-[11px] sm:text-xs font-semibold text-[#E8D2B5] leading-snug line-clamp-2">
+                {cut.title}
+              </h2>
+            </div>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- E. BOTTOM CONTACT & PORTFOLIO STRIP -->
+  <footer class="relative z-30 mx-auto w-full max-w-[1380px] px-4 sm:px-6 pb-2.5 sm:pb-3 pt-1 shrink-0">
+    <div
+      class="rounded-2xl lg:rounded-full border border-[#A5A79B]/20 bg-[#121317]/78 backdrop-blur-xl px-4 sm:px-5 py-2 flex flex-col lg:flex-row items-center justify-between gap-2 lg:gap-4"
+    >
+      <!-- Service Badges -->
+      <div class="w-full lg:w-auto flex items-center justify-start sm:justify-center lg:justify-start gap-2 overflow-x-auto filmstrip-scroll">
+        {
+          SHOWCASE_SERVICES.map((svc) => (
+            <span class="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#A5A79B]/22 bg-[#0C0D10]/70 px-3 py-1 text-[11px] text-[#E8D2B5] tracking-wide">
+              <span aria-hidden="true">{svc.icon}</span>
+              <span>{svc.label}</span>
+            </span>
+          ))
+        }
+      </div>
+
+      <!-- Contact & Full Portfolio Links -->
+      <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] sm:text-xs">
+        <a
+          href={SHOWCASE_META.whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 text-[#E8D2B5] hover:text-white transition-colors font-medium"
+        >
+          <span class="h-1.5 w-1.5 rounded-full bg-[#7D1110]" aria-hidden="true"></span>
+          <span class="font-mono">{SHOWCASE_META.phoneDisplay}</span>
+        </a>
+
+        <span class="text-[#A5A79B]/35 hidden sm:inline" aria-hidden="true">·</span>
+
+        <a
+          href={SHOWCASE_META.emailHref}
+          class="text-[#A5A79B] hover:text-[#E8D2B5] transition-colors"
+        >
+          {SHOWCASE_META.email}
+        </a>
+
+        <span class="text-[#A5A79B]/35 hidden sm:inline" aria-hidden="true">·</span>
+
+        <a
+          href={SHOWCASE_META.portfolioUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-[#E8D2B5] hover:text-white transition-colors underline decoration-[#7D1110] underline-offset-4"
+        >
+          {SHOWCASE_META.portfolioLabel} ↗
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- D. IN-PLACE CINEMA MODAL (Dynamically mounts video ONLY on click) -->
+  <div
+    id="cinema-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="cinema-modal-title"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-[#0C0D10]/88 backdrop-blur-md"
+  >
+    <div
+      id="cinema-modal-panel"
+      class="relative w-full max-w-[960px] rounded-2xl border border-[#7D1110]/70 bg-[#121318] shadow-[0_32px_96px_rgba(0,0,0,0.92)] overflow-hidden flex flex-col"
+    >
+      <!-- Modal Header -->
+      <div class="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-5 py-3 border-b border-[#A5A79B]/18 bg-[#0C0D10]/90">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-[#A5A79B]">
+            <span id="cinema-modal-badge" class="text-[#E8D2B5]">Category</span>
+            <span aria-hidden="true">•</span>
+            <span id="cinema-modal-duration" class="text-[#E8D2B5]">00:00</span>
+            <span aria-hidden="true">•</span>
+            <span id="cinema-modal-client">Client</span>
+          </div>
+          <h3
+            id="cinema-modal-title"
+            class="text-sm sm:text-base font-semibold text-[#E8D2B5] truncate mt-0.5"
+          >
+            Video Preview
+          </h3>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <button
+            id="cinema-modal-mode-btn"
+            type="button"
+            class="rounded-full border border-[#A5A79B]/30 hover:border-[#E8D2B5]/70 px-3 py-1 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-[#A5A79B] hover:text-[#E8D2B5] transition-colors cursor-pointer"
+          >
+            Direct MP4
+          </button>
+
+          <button
+            id="cinema-modal-close"
+            type="button"
+            aria-label="Close video preview"
+            class="rounded-full bg-[#590907] hover:bg-[#7D1110] border border-[#E8D2B5]/25 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-[#E8D2B5] transition-colors cursor-pointer"
+          >
+            Close [✕]
+          </button>
+        </div>
+      </div>
+
+      <!-- Focused 16:9 or 9:16 Player Stage -->
+      <div class="w-full bg-black flex items-center justify-center p-2 sm:p-4">
+        <div
+          id="cinema-modal-viewport"
+          class="relative w-full aspect-video max-h-[70dvh] rounded-xl overflow-hidden bg-black flex items-center justify-center"
+        >
+          <!-- Dynamically populated on click -->
+        </div>
+      </div>
+
+      <!-- Modal Footer Credit -->
+      <div class="px-4 sm:px-5 py-2.5 border-t border-[#A5A79B]/14 bg-[#0C0D10]/85 flex items-center justify-between gap-3 text-xs text-[#A5A79B]">
+        <span id="cinema-modal-role" class="truncate">Role Credit</span>
+        <span class="font-mono text-[10px] uppercase tracking-wider text-[#E8D2B5]/75 shrink-0">
+          ESC or Backdrop to Close
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Rolling 3D Perspective Conveyor & On-Demand Video Modal Island -->
+<script>
+  (() => {
+    const region = document.getElementById('rolling-arc-region');
+    const stage = document.getElementById('rolling-arc-stage');
+    const modal = document.getElementById('cinema-modal');
+    const modalPanel = document.getElementById('cinema-modal-panel');
+    const modalViewport = document.getElementById('cinema-modal-viewport');
+    const modalCloseBtn = document.getElementById('cinema-modal-close');
+    const modalModeBtn = document.getElementById('cinema-modal-mode-btn');
+    const modalTitle = document.getElementById('cinema-modal-title');
+    const modalBadge = document.getElementById('cinema-modal-badge');
+    const modalDuration = document.getElementById('cinema-modal-duration');
+    const modalClient = document.getElementById('cinema-modal-client');
+    const modalRole = document.getElementById('cinema-modal-role');
+
+    if (!region || !stage || !modal || !modalViewport) return;
+
+    const cards = Array.from(stage.querySelectorAll<HTMLElement>('[data-arc-item]'));
+    const heroBgVideo = document.getElementById('hero-ambient-video') as HTMLVideoElement | null;
+    const uniqueCount = Number(region.dataset.uniqueCount || 6);
+    if (cards.length === 0) return;
+
+    // 1. Rolling 3D Cylinder Conveyor State
+    let scrollOffset = 0;
+    let isHovered = false;
+    let isDragging = false;
+    let isModalOpen = false;
+    let pointerStartX = 0;
+    let dragStartOffset = 0;
+    let dragTravel = 0;
+    let lastTs = performance.now();
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const MARQUEE_SPEED = prefersReducedMotion ? 0 : 34; // px/sec gentle cinema glide
+
+    if (heroBgVideo && prefersReducedMotion) {
+      heroBgVideo.pause();
+      heroBgVideo.classList.add('hidden');
+    }
+
+    // Hover prefetch cache (warms Drive preview document once on hover without downloading video bytes)
+    const prefetchedUrls = new Set<string>();
+    const warmCutPreview = (card: HTMLElement) => {
+      const previewUrl = card.dataset.previewUrl;
+      if (!previewUrl || prefetchedUrls.has(previewUrl)) return;
+      prefetchedUrls.add(previewUrl);
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.as = 'document';
+      link.href = previewUrl;
+      document.head.appendChild(link);
+    };
+
+    const getMetrics = () => {
+      const firstCard = cards[0];
+      const cardW = firstCard.offsetWidth || 180;
+      const gap = cardW < 160 ? 12 : 18;
+      const step = cardW + gap;
+      const totalWidth = cards.length * step;
+      const singleSetWidth = uniqueCount * step;
+      const stageW = stage.clientWidth || window.innerWidth;
+      return { cardW, step, totalWidth, singleSetWidth, stageW };
+    };
+
+    const renderArcFrame = (now: number) => {
+      const dt = Math.min((now - lastTs) / 1000, 0.05);
+      lastTs = now;
+
+      const { cardW, step, totalWidth, singleSetWidth, stageW } = getMetrics();
+
+      if (!isHovered && !isDragging && !isModalOpen && MARQUEE_SPEED > 0) {
+        scrollOffset = (scrollOffset + MARQUEE_SPEED * dt) % singleSetWidth;
+      }
+
+      const halfTotal = totalWidth / 2;
+      const halfSpread = Math.max(stageW * 0.48, 280);
+      const isMobile = window.innerWidth < 640;
+      const maxRotate = isMobile ? 16 : 30;
+      const depthScale = Math.max(0.65, Math.min(1, cardW / 202));
+
+      cards.forEach((card, idx) => {
+        // Wrap virtual x position symmetrically around [-halfTotal, +halfTotal]
+        let rawX = idx * step - scrollOffset;
+        rawX = ((((rawX + halfTotal) % totalWidth) + totalWidth) % totalWidth) - halfTotal;
+
+        const norm = Math.max(-1.3, Math.min(1.3, rawX / halfSpread));
+        const absNorm = Math.abs(norm);
+
+        // Concave cylinder equations matching reference image:
+        // Left cards rotateY(+deg), Center sits recessed (0deg), Right cards rotateY(-deg)
+        const rotateY = -norm * maxRotate;
+        const translateZ = isMobile
+          ? Math.pow(absNorm, 2) * 45 - 15
+          : (Math.pow(absNorm, 2) * 140 - 38) * depthScale;
+        const scale = isMobile
+          ? 0.94 + Math.min(absNorm, 1) * 0.06
+          : 0.9 + Math.min(absNorm, 1.1) * 0.12;
+        const opacity = absNorm > 1.12 ? Math.max(0, 1 - (absNorm - 1.12) * 4.5) : 1;
+
+        card.style.transform = `translate3d(calc(-50% + ${rawX.toFixed(1)}px), -50%, ${translateZ.toFixed(1)}px) rotateY(${rotateY.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+        card.style.opacity = opacity.toFixed(3);
+        card.style.zIndex = String(Math.round(10 + absNorm * 20));
+        card.style.pointerEvents = opacity < 0.15 ? 'none' : 'auto';
+      });
+
+      window.requestAnimationFrame(renderArcFrame);
+    };
+
+    // Pause rolling cleanly on hover so clients can target & click any cut
+    stage.addEventListener('pointerenter', () => {
+      isHovered = true;
+    });
+    stage.addEventListener('pointerleave', () => {
+      isHovered = false;
+    });
+
+    // Pointer Drag / Touch Swipe Scrubbing
+    stage.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      pointerStartX = e.clientX;
+      dragStartOffset = scrollOffset;
+      dragTravel = 0;
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - pointerStartX;
+      dragTravel = Math.max(dragTravel, Math.abs(dx));
+      const { singleSetWidth } = getMetrics();
+      scrollOffset = (((dragStartOffset - dx) % singleSetWidth) + singleSetWidth) % singleSetWidth;
+    });
+
+    window.addEventListener('pointerup', () => {
+      isDragging = false;
+      window.setTimeout(() => {
+        dragTravel = 0;
+      }, 40);
+    });
+
+    // Horizontal Wheel / Trackpad Scrub
+    stage.addEventListener(
+      'wheel',
+      (e) => {
+        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : 0;
+        if (!delta) return;
+        e.preventDefault();
+        const { singleSetWidth } = getMetrics();
+        scrollOffset = (((scrollOffset + delta) % singleSetWidth) + singleSetWidth) % singleSetWidth;
+      },
+      { passive: false },
+    );
+
+    // 2. Zero-Lag On-Demand Cinema Modal Playback
+    let activeCutCard: HTMLElement | null = null;
+    let activeVideo: HTMLVideoElement | null = null;
+    let activeIframe: HTMLIFrameElement | null = null;
+    let usingDriveEmbed = true;
+
+    const getCardPosterSrc = (card: HTMLElement): string => {
+      const img = card.querySelector<HTMLImageElement>('img');
+      return img ? img.currentSrc || img.src : '';
+    };
+
+    const createPosterLoadingLayer = (card: HTMLElement, labelText: string): HTMLElement => {
+      const wrapper = document.createElement('div');
+      wrapper.className =
+        'pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-black transition-opacity duration-200';
+
+      const posterSrc = getCardPosterSrc(card);
+      if (posterSrc) {
+        const bgImg = document.createElement('img');
+        bgImg.src = posterSrc;
+        bgImg.alt = '';
+        bgImg.className = 'absolute inset-0 w-full h-full object-cover opacity-35 blur-[2px]';
+        wrapper.appendChild(bgImg);
+      }
+
+      const pill = document.createElement('div');
+      pill.className =
+        'relative z-10 inline-flex items-center gap-2 rounded-full border border-[#7D1110] bg-[#0C0D10]/90 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[#E8D2B5] shadow-lg';
+      pill.innerHTML = `<span class="h-2.5 w-2.5 rounded-full border-2 border-[#E8D2B5] border-t-transparent animate-spin"></span><span>${labelText}</span>`;
+      wrapper.appendChild(pill);
+      return wrapper;
+    };
+
+    const teardownPlayer = () => {
+      if (activeVideo) {
+        activeVideo.pause();
+        activeVideo.removeAttribute('src');
+        activeVideo.load();
+        activeVideo = null;
+      }
+      if (activeIframe) {
+        activeIframe.src = 'about:blank';
+        activeIframe = null;
+      }
+      modalViewport.innerHTML = '';
+    };
+
+    const mountDriveEmbed = (card: HTMLElement) => {
+      teardownPlayer();
+      usingDriveEmbed = true;
+      if (modalModeBtn) modalModeBtn.textContent = 'Direct MP4';
+
+      const loadingLayer = createPosterLoadingLayer(card, 'Loading HD Stream');
+
+      const iframe = document.createElement('iframe');
+      iframe.src = card.dataset.previewUrl || '';
+      iframe.title = `${card.dataset.title || 'Cut'} — Adaptive HD Player`;
+      iframe.className = 'relative z-0 w-full h-full border-0 bg-black';
+      iframe.allow = 'autoplay; fullscreen; encrypted-media';
+      iframe.allowFullscreen = true;
+      iframe.addEventListener('load', () => {
+        loadingLayer.classList.add('opacity-0');
+        window.setTimeout(() => loadingLayer.remove(), 220);
+      });
+      activeIframe = iframe;
+      modalViewport.append(iframe, loadingLayer);
+    };
+
+    const mountDirectVideo = (card: HTMLElement) => {
+      teardownPlayer();
+      usingDriveEmbed = false;
+      if (modalModeBtn) modalModeBtn.textContent = 'Adaptive Stream';
+
+      const loadingLayer = createPosterLoadingLayer(card, 'Streaming MP4');
+
+      const video = document.createElement('video');
+      video.className = 'w-full h-full object-contain bg-black';
+      video.setAttribute('preload', 'none');
+      video.autoplay = true;
+      video.playsInline = true;
+      video.controls = true;
+      const posterSrc = getCardPosterSrc(card);
+      if (posterSrc) video.poster = posterSrc;
+      video.src = card.dataset.streamUrl || '';
+      activeVideo = video;
+
+      video.addEventListener('canplay', () => loadingLayer.remove());
+      video.addEventListener('playing', () => loadingLayer.remove());
+      video.addEventListener('error', () => {
+        loadingLayer.remove();
+        mountDriveEmbed(card);
+      });
+
+      modalViewport.append(video, loadingLayer);
+      video.play().catch(() => loadingLayer.remove());
+    };
+
+    const openCinemaModal = (card: HTMLElement) => {
+      activeCutCard = card;
+      isModalOpen = true;
+      if (heroBgVideo && !heroBgVideo.paused) {
+        heroBgVideo.pause();
+      }
+
+      const isVertical = card.dataset.aspect === '9:16';
+      if (modalPanel) {
+        modalPanel.classList.toggle('max-w-[440px]', isVertical);
+        modalPanel.classList.toggle('max-w-[960px]', !isVertical);
+      }
+      modalViewport.classList.toggle('aspect-[9/16]', isVertical);
+      modalViewport.classList.toggle('aspect-video', !isVertical);
+
+      if (modalTitle) modalTitle.textContent = card.dataset.title || '';
+      if (modalBadge) modalBadge.textContent = card.dataset.badge || '';
+      if (modalDuration) modalDuration.textContent = card.dataset.duration || '00:00';
+      if (modalClient) modalClient.textContent = card.dataset.client || '';
+      if (modalRole) modalRole.textContent = card.dataset.role || '';
+
+      modal.classList.remove('hidden');
+      mountDriveEmbed(card);
+      modalCloseBtn?.focus();
+    };
+
+    const closeCinemaModal = () => {
+      if (!isModalOpen) return;
+      isModalOpen = false;
+      activeCutCard = null;
+      teardownPlayer();
+      modal.classList.add('hidden');
+      lastTs = performance.now();
+      if (heroBgVideo && !prefersReducedMotion) {
+        heroBgVideo.play().catch(() => {});
+      }
+    };
+
+    cards.forEach((card) => {
+      card.addEventListener('pointerenter', () => warmCutPreview(card));
+      card.addEventListener('focus', () => warmCutPreview(card));
+      card.addEventListener('click', (e) => {
+        if (dragTravel > 6) {
+          e.preventDefault();
+          return;
+        }
+        openCinemaModal(card);
+      });
+    });
+
+    modalModeBtn?.addEventListener('click', () => {
+      if (!activeCutCard) return;
+      if (usingDriveEmbed) {
+        mountDirectVideo(activeCutCard);
+      } else {
+        mountDriveEmbed(activeCutCard);
+      }
+    });
+
+    modalCloseBtn?.addEventListener('click', closeCinemaModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeCinemaModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isModalOpen) {
+        e.preventDefault();
+        closeCinemaModal();
+      }
+    });
+
+    // Center initial cut neatly and start rolling conveyor
+    const { singleSetWidth } = getMetrics();
+    scrollOffset = singleSetWidth * 0.5;
+    window.requestAnimationFrame(renderArcFrame);
+  })();
+</script>

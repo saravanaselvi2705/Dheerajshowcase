@@ -1,0 +1,631 @@
+---
+import { Image } from 'astro:assets';
+import {
+  HERO_ARC_WORKS,
+  PORTFOLIO_CONTACT,
+  SERVICE_PILLS,
+  type PortfolioWork,
+} from '../data/portfolio';
+
+interface Props {
+  works?: PortfolioWork[];
+}
+
+const { works = HERO_ARC_WORKS } = Astro.props;
+const initialCenterIndex = Math.floor(works.length / 2);
+---
+
+<div class="relative bg-[#0C0D10] text-[#E8D2B5] overflow-hidden">
+  <!-- Ambient Warm Burgundy & Cream Studio Glow -->
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="background: radial-gradient(circle at 18% 15%, rgba(89, 9, 7, 0.45) 0%, rgba(232, 210, 182, 0.08) 35%, transparent 70%), radial-gradient(ellipse 60% 45% at 80% 78%, rgba(89, 9, 7, 0.22) 0%, transparent 68%);"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Subtle Fine Film-Suite Grid Overlay -->
+  <div
+    class="pointer-events-none absolute inset-0 opacity-[0.04]"
+    style="background-image: linear-gradient(to right, #A5A79B 1px, transparent 1px), linear-gradient(to bottom, #A5A79B 1px, transparent 1px); background-size: 64px 64px;"
+    aria-hidden="true"
+  ></div>
+
+  <!-- 1. FLOATING MINIMAL HEADER -->
+  <header class="fixed top-0 inset-x-0 z-50 px-4 sm:px-6 pt-3 sm:pt-4 pointer-events-none">
+    <nav
+      aria-label="Primary navigation"
+      class="pointer-events-auto mx-auto max-w-6xl rounded-full border border-[#A5A79B]/20 bg-[#0C0D10]/78 backdrop-blur-xl shadow-[0_14px_40px_rgba(0,0,0,0.65)] px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4"
+    >
+      <!-- Left: Studio Brand Mark -->
+      <a
+        href="#top"
+        class="inline-flex items-center gap-2.5 shrink-0 group"
+        aria-label="Dheeraj C — Home"
+      >
+        <span
+          class="inline-flex items-center justify-center w-5 h-5 rounded-full border border-[#A5A79B]/35 bg-[#15171C] text-[9px] text-[#7D1110]"
+          aria-hidden="true"
+        >
+          ●
+        </span>
+        <span class="font-display text-sm sm:text-base font-bold tracking-[0.16em] uppercase text-[#E8D2B5] group-hover:text-white transition-colors">
+          {PORTFOLIO_CONTACT.brand}
+        </span>
+      </a>
+
+      <!-- Center: Nav Links -->
+      <ul class="hidden md:flex items-center gap-7 text-xs sm:text-sm font-medium tracking-wide text-[#A5A79B]">
+        <li>
+          <a href="#works" class="hover:text-[#E8D2B5] transition-colors py-1">
+            Works
+          </a>
+        </li>
+        <li>
+          <a href="#about" class="hover:text-[#E8D2B5] transition-colors py-1">
+            About
+          </a>
+        </li>
+        <li>
+          <a href="#experience" class="hover:text-[#E8D2B5] transition-colors py-1">
+            Experience
+          </a>
+        </li>
+        <li>
+          <a href="#contact" class="hover:text-[#E8D2B5] transition-colors py-1">
+            Contact
+          </a>
+        </li>
+      </ul>
+
+      <!-- Right: Burgundy Pill CTA -->
+      <a
+        href="#contact"
+        class="inline-flex items-center gap-1.5 rounded-full bg-[#590907] hover:bg-[#7D1110] border border-[#E8D2B5]/20 px-4 sm:px-5 py-1.5 sm:py-2 text-xs font-semibold tracking-wider uppercase text-[#E8D2B5] shadow-[0_6px_22px_rgba(89,9,7,0.5)] transition-all hover:-translate-y-0.5 shrink-0"
+      >
+        <span>Let’s Talk</span>
+        <span aria-hidden="true">↗</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- 2. HERO COPY & VALUE PROPOSITION -->
+  <section
+    id="top"
+    class="relative z-10 pt-24 sm:pt-28 pb-6 sm:pb-8"
+  >
+    <div class="mx-auto max-w-5xl px-4 sm:px-6 text-center flex flex-col items-center">
+      <!-- Kicker Pill Badge -->
+      <div
+        class="inline-flex items-center gap-2 rounded-full border border-[#A5A79B]/28 bg-[#15171C]/80 backdrop-blur-md px-3.5 py-1.5 text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.18em] text-[#E8D2B5] mb-5 shadow-[0_4px_18px_rgba(0,0,0,0.45)]"
+      >
+        <span class="h-1.5 w-1.5 rounded-full bg-[#7D1110] shadow-[0_0_8px_#7D1110]" aria-hidden="true"></span>
+        <span>{PORTFOLIO_CONTACT.kicker}</span>
+      </div>
+
+      <!-- Large Display Headline -->
+      <h1
+        class="font-display font-bold text-[#E8D2B5] tracking-[0.01em] leading-[1.08] max-w-4xl"
+        style="font-size: clamp(2rem, 4.6vw, 3.85rem);"
+      >
+        High-retention video editing that commands attention and drives results
+      </h1>
+
+      <!-- Subheadline -->
+      <p class="mt-4 sm:mt-5 max-w-2xl text-sm sm:text-base md:text-lg text-[#A5A79B] leading-relaxed">
+        Crafting commercial spots, high-impact reels, motion graphics, and end-to-end delivery pipelines for brands, creators, and digital channels.
+      </p>
+
+      <!-- CTA Row -->
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-3.5">
+        <a
+          href="#works"
+          class="inline-flex items-center gap-2 rounded-full bg-[#590907] hover:bg-[#7D1110] border border-[#E8D2B5]/20 px-6 py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#E8D2B5] shadow-[0_10px_28px_rgba(89,9,7,0.55)] transition-all hover:-translate-y-0.5"
+        >
+          <span>Explore Works</span>
+          <span aria-hidden="true">↓</span>
+        </a>
+
+        <a
+          href={PORTFOLIO_CONTACT.whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-full border border-[#A5A79B]/35 hover:border-[#E8D2B5]/75 bg-[#15171C]/60 backdrop-blur-md px-6 py-3 text-xs sm:text-sm font-medium uppercase tracking-wider text-[#E8D2B5] transition-all hover:-translate-y-0.5"
+        >
+          <span>Contact / WhatsApp</span>
+          <span aria-hidden="true" class="text-[#A5A79B]">↗</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 3. CURVED 3D PERSPECTIVE VIDEO ARC -->
+    <div
+      id="works"
+      data-arc-showcase
+      data-initial-center={initialCenterIndex}
+      class="relative mt-8 sm:mt-10 w-full scroll-mt-24"
+    >
+      <!-- Arc Controls & Status Bar -->
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 mb-3 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 text-[11px] font-mono uppercase tracking-[0.16em] text-[#A5A79B]">
+          <span class="inline-block h-1.5 w-1.5 rounded-full bg-[#7D1110]" aria-hidden="true"></span>
+          <span>Click any cut to stream in-place</span>
+          <span class="hidden sm:inline text-[#A5A79B]/45">•</span>
+          <span id="arc-active-label" class="hidden sm:inline text-[#E8D2B5]">
+            {works[initialCenterIndex]?.title}
+          </span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            id="arc-prev-btn"
+            type="button"
+            aria-label="Rotate arc left"
+            class="w-8 h-8 rounded-full border border-[#A5A79B]/28 hover:border-[#E8D2B5]/70 bg-[#15171C]/90 text-[#A5A79B] hover:text-[#E8D2B5] flex items-center justify-center transition-colors cursor-pointer"
+          >
+            ←
+          </button>
+          <button
+            id="arc-next-btn"
+            type="button"
+            aria-label="Rotate arc right"
+            class="w-8 h-8 rounded-full border border-[#A5A79B]/28 hover:border-[#E8D2B5]/70 bg-[#15171C]/90 text-[#A5A79B] hover:text-[#E8D2B5] flex items-center justify-center transition-colors cursor-pointer"
+          >
+            →
+          </button>
+        </div>
+      </div>
+
+      <!-- Perspective Viewport -->
+      <div class="arc-perspective relative w-full overflow-hidden py-5 sm:py-7">
+        <!-- Side Edge Vignettes -->
+        <div
+          class="pointer-events-none hidden md:block absolute inset-y-0 left-0 w-16 lg:w-28 z-20 bg-gradient-to-r from-[#0C0D10] to-transparent"
+          aria-hidden="true"
+        ></div>
+        <div
+          class="pointer-events-none hidden md:block absolute inset-y-0 right-0 w-16 lg:w-28 z-20 bg-gradient-to-l from-[#0C0D10] to-transparent"
+          aria-hidden="true"
+        ></div>
+
+        <!-- Draggable / Scrollable 3D Track -->
+        <div
+          id="arc-track"
+          class="arc-track flex items-center gap-4 sm:gap-5 overflow-x-auto px-[12vw] md:px-[calc(50%-160px)] cursor-grab active:cursor-grabbing select-none"
+          role="region"
+          aria-label="Curved 3D video showcase arc"
+        >
+          {
+            works.map((work, index) => {
+              const isPortrait = work.aspect === '9:16';
+              return (
+                <article
+                  data-arc-card
+                  data-index={index}
+                  data-id={work.id}
+                  data-title={work.title}
+                  data-client={work.client}
+                  data-category={work.category}
+                  data-runtime={work.runtime}
+                  data-aspect={work.aspect}
+                  data-stream-url={work.streamUrl}
+                  data-preview-url={work.previewUrl}
+                  data-playing="false"
+                  tabindex="0"
+                  role="button"
+                  aria-label={`Play ${work.title} (${work.category}, ${work.runtime})`}
+                  class:list={[
+                    'arc-card group relative shrink-0 rounded-2xl border border-[#A5A79B]/24 bg-[#121318] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.75)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8D2B5]',
+                    isPortrait
+                      ? 'w-[190px] sm:w-[214px] aspect-[9/16]'
+                      : 'w-[310px] sm:w-[368px] aspect-video',
+                  ]}
+                >
+                  {/* Layer 1: Lightweight Astro-Optimized Poster (Zero video loaded upfront) */}
+                  <div
+                    data-poster-layer
+                    class="relative w-full h-full cursor-pointer"
+                  >
+                    <Image
+                      src={work.thumbnail}
+                      alt={`${work.title} — ${work.category} preview`}
+                      widths={[360, 640]}
+                      sizes={isPortrait ? '220px' : '370px'}
+                      format="webp"
+                      loading={index >= 1 && index <= 5 ? 'eager' : 'lazy'}
+                      decoding="async"
+                      draggable="false"
+                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 pointer-events-none"
+                    />
+
+                    {/* Dark Cinematic Vignette */}
+                    <div
+                      class="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0C0D10]/95 via-[#0C0D10]/20 to-[#0C0D10]/35"
+                      aria-hidden="true"
+                    ></div>
+
+                    {/* Top Metadata Bar */}
+                    <div class="pointer-events-none absolute top-2.5 inset-x-2.5 flex items-center justify-between gap-2">
+                      <span class="rounded-full border border-[#A5A79B]/30 bg-[#0C0D10]/82 backdrop-blur-sm px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[#E8D2B5]">
+                        {work.category}
+                      </span>
+                      <span class="rounded-md border border-[#A5A79B]/28 bg-[#0C0D10]/82 backdrop-blur-sm px-2 py-0.5 font-mono text-[10px] text-[#A5A79B] tabular-nums">
+                        {work.runtime}
+                      </span>
+                    </div>
+
+                    {/* Center Subtle Play Icon Overlay */}
+                    <div
+                      class="pointer-events-none absolute inset-0 flex items-center justify-center"
+                      aria-hidden="true"
+                    >
+                      <span class="flex items-center justify-center w-12 h-12 rounded-full bg-[#590907]/90 group-hover:bg-[#7D1110] border border-[#E8D2B5]/45 text-[#E8D2B5] shadow-[0_10px_28px_rgba(0,0,0,0.75)] transition-transform duration-300 group-hover:scale-110">
+                        <svg viewBox="0 0 24 24" class="w-5 h-5 ml-0.5 fill-current">
+                          <path d="M8 5.14v14l11-7-11-7z" />
+                        </svg>
+                      </span>
+                    </div>
+
+                    {/* Bottom Card Title & Aspect Tag */}
+                    <div class="pointer-events-none absolute bottom-0 inset-x-0 p-3 flex flex-col gap-0.5">
+                      <div class="flex items-center justify-between gap-2 text-[10px] font-mono uppercase tracking-wider text-[#A5A79B]">
+                        <span>{work.client}</span>
+                        <span>{work.aspect}</span>
+                      </div>
+                      <h2 class="text-xs sm:text-sm font-semibold text-[#E8D2B5] leading-snug line-clamp-2">
+                        {work.title}
+                      </h2>
+                    </div>
+                  </div>
+
+                  {/* Layer 2: On-Demand Inline Video Container (Empty on initial load!) */}
+                  <div
+                    data-video-mount
+                    class="hidden absolute inset-0 z-20 bg-black"
+                  ></div>
+                </article>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      <!-- 4. SERVICE PILL TICKER (Beneath the Arc) -->
+      <div class="mx-auto max-w-5xl px-4 sm:px-6 mt-2 sm:mt-4">
+        <div
+          class="rounded-full border border-[#A5A79B]/20 bg-[#15171C]/70 backdrop-blur-md px-3 sm:px-5 py-2.5 flex items-center justify-start sm:justify-center gap-2.5 sm:gap-4 overflow-x-auto filmstrip-scroll"
+          aria-label="Core post-production services"
+        >
+          {
+            SERVICE_PILLS.map((pill) => (
+              <span class="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#A5A79B]/18 bg-[#0C0D10]/75 px-3.5 py-1 text-[11px] sm:text-xs font-medium tracking-wide text-[#E8D2B5]">
+                <span aria-hidden="true">{pill.icon}</span>
+                <span>{pill.label}</span>
+              </span>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Interactive 3D Perspective Arc & Zero-Lag On-Demand Inline Playback Script -->
+<script>
+  (() => {
+    const showcase = document.querySelector<HTMLElement>('[data-arc-showcase]');
+    if (!showcase) return;
+
+    const track = document.getElementById('arc-track');
+    const prevBtn = document.getElementById('arc-prev-btn');
+    const nextBtn = document.getElementById('arc-next-btn');
+    const activeLabel = document.getElementById('arc-active-label');
+    const cards = Array.from(showcase.querySelectorAll<HTMLElement>('[data-arc-card]'));
+
+    if (!track || cards.length === 0) return;
+
+    const initialCenter = Number(showcase.dataset.initialCenter || Math.floor(cards.length / 2));
+
+    let activePlayingCard: HTMLElement | null = null;
+    let activeVideoEl: HTMLVideoElement | null = null;
+    let activeIframeEl: HTMLIFrameElement | null = null;
+    let rafPending = false;
+    let isPointerDown = false;
+    let startX = 0;
+    let startScrollLeft = 0;
+    let dragDistance = 0;
+
+    // 1. Cylindrical Concave 3D Perspective Calculator
+    const updateArcTransforms = () => {
+      rafPending = false;
+      const trackRect = track.getBoundingClientRect();
+      const viewportCenter = trackRect.left + trackRect.width / 2;
+      const spreadRadius = Math.max(trackRect.width * 0.44, 340);
+      const isDesktop = window.innerWidth >= 768;
+
+      let closestCard: HTMLElement = cards[0];
+      let closestDist = Infinity;
+
+      cards.forEach((card) => {
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.left + rect.width / 2;
+        const delta = cardCenter - viewportCenter;
+        const absDist = Math.abs(delta);
+
+        if (absDist < closestDist) {
+          closestDist = absDist;
+          closestCard = card;
+        }
+
+        const norm = Math.max(-1.35, Math.min(1.35, delta / spreadRadius));
+        const isPlaying = card.dataset.playing === 'true';
+
+        if (!isDesktop) {
+          const mobileScale = isPlaying ? 1.02 : 1 - Math.min(Math.abs(norm), 1) * 0.05;
+          card.style.transform = `scale(${mobileScale.toFixed(3)})`;
+          card.style.opacity = '1';
+          card.style.zIndex = isPlaying ? '30' : '1';
+          return;
+        }
+
+        // Far-left: rotateY(+18deg) scale(0.92); Center: 0deg scale(1); Far-right: rotateY(-18deg) scale(0.92)
+        const rotateY = isPlaying && Math.abs(norm) < 0.25 ? 0 : Math.max(-18, Math.min(18, -norm * 18));
+        const baseScale = 1 - Math.min(Math.abs(norm), 1.15) * 0.08;
+        const scale = isPlaying ? Math.max(baseScale, 1.04) : baseScale;
+        const translateZ = isPlaying
+          ? 36
+          : Math.pow(Math.min(Math.abs(norm), 1.2), 2) * 26;
+        const opacity = isPlaying ? 1 : Math.max(0.58, 1 - Math.max(0, Math.abs(norm) - 0.85) * 0.45);
+
+        card.style.transform = `translateZ(${translateZ.toFixed(1)}px) rotateY(${rotateY.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+        card.style.opacity = opacity.toFixed(3);
+        card.style.zIndex = isPlaying
+          ? '30'
+          : String(Math.round(20 - Math.min(Math.abs(norm), 2) * 8));
+      });
+
+      if (activeLabel && !activePlayingCard && closestCard) {
+        activeLabel.textContent = closestCard.dataset.title || '';
+      }
+    };
+
+    const scheduleTransformUpdate = () => {
+      if (rafPending) return;
+      rafPending = true;
+      window.requestAnimationFrame(updateArcTransforms);
+    };
+
+    const scrollCardToCenter = (card: HTMLElement, smooth = true) => {
+      const targetLeft =
+        card.offsetLeft - track.clientWidth / 2 + card.clientWidth / 2;
+      track.scrollTo({
+        left: targetLeft,
+        behavior: smooth ? 'smooth' : 'auto',
+      });
+    };
+
+    // 2. Teardown & Memory Release for Active Video
+    const stopActivePlayback = () => {
+      if (!activePlayingCard) return;
+
+      if (activeVideoEl) {
+        activeVideoEl.pause();
+        activeVideoEl.removeAttribute('src');
+        activeVideoEl.load(); // Flushes buffered media memory immediately
+        activeVideoEl = null;
+      }
+
+      if (activeIframeEl) {
+        activeIframeEl.src = 'about:blank';
+        activeIframeEl = null;
+      }
+
+      const mount = activePlayingCard.querySelector<HTMLElement>('[data-video-mount]');
+      const poster = activePlayingCard.querySelector<HTMLElement>('[data-poster-layer]');
+      if (mount) {
+        mount.innerHTML = '';
+        mount.classList.add('hidden');
+      }
+      if (poster) {
+        poster.classList.remove('hidden');
+      }
+
+      activePlayingCard.dataset.playing = 'false';
+      activePlayingCard = null;
+      scheduleTransformUpdate();
+    };
+
+    // 3. On-Demand In-Place Video Mounting (Zero Bandwidth Until Click)
+    const playCardInPlace = (card: HTMLElement) => {
+      if (activePlayingCard === card) return;
+
+      stopActivePlayback();
+      scrollCardToCenter(card, true);
+
+      const mount = card.querySelector<HTMLElement>('[data-video-mount]');
+      const poster = card.querySelector<HTMLElement>('[data-poster-layer]');
+      const posterImg = poster?.querySelector<HTMLImageElement>('img');
+      if (!mount || !poster) return;
+
+      const streamUrl = card.dataset.streamUrl || '';
+      const previewUrl = card.dataset.previewUrl || '';
+      const title = card.dataset.title || 'Project Preview';
+
+      activePlayingCard = card;
+      card.dataset.playing = 'true';
+      if (activeLabel) activeLabel.textContent = `Playing · ${title}`;
+
+      poster.classList.add('hidden');
+      mount.classList.remove('hidden');
+      mount.innerHTML = '';
+
+      // Top-right Close & Fullscreen Floating Controls
+      const overlayControls = document.createElement('div');
+      overlayControls.className =
+        'absolute top-2 right-2 z-30 flex items-center gap-1.5';
+
+      const expandBtn = document.createElement('button');
+      expandBtn.type = 'button';
+      expandBtn.ariaLabel = `Fullscreen ${title}`;
+      expandBtn.className =
+        'w-7 h-7 rounded-full bg-[#0C0D10]/85 hover:bg-[#590907] border border-[#E8D2B5]/35 text-[#E8D2B5] text-xs flex items-center justify-center transition-colors cursor-pointer';
+      expandBtn.textContent = '⤢';
+      expandBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const target = activeVideoEl || mount;
+        if (!document.fullscreenElement) {
+          target.requestFullscreen?.().catch(() => {});
+        } else {
+          document.exitFullscreen?.().catch(() => {});
+        }
+      });
+
+      const closeBtn = document.createElement('button');
+      closeBtn.type = 'button';
+      closeBtn.ariaLabel = `Close ${title}`;
+      closeBtn.className =
+        'w-7 h-7 rounded-full bg-[#0C0D10]/85 hover:bg-[#590907] border border-[#E8D2B5]/35 text-[#E8D2B5] text-xs flex items-center justify-center transition-colors cursor-pointer';
+      closeBtn.textContent = '✕';
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        stopActivePlayback();
+      });
+
+      overlayControls.append(expandBtn, closeBtn);
+
+      // Buffering Pill
+      const bufferPill = document.createElement('div');
+      bufferPill.className =
+        'pointer-events-none absolute top-2 left-2 z-30 inline-flex items-center gap-1.5 rounded-full bg-[#0C0D10]/85 border border-[#7D1110] px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[#E8D2B5]';
+      bufferPill.innerHTML =
+        '<span class="h-2 w-2 rounded-full border border-[#E8D2B5] border-t-transparent animate-spin"></span><span>Loading Cut</span>';
+
+      // Create <video preload="none" autoplay playsinline controls> ONLY on click
+      const video = document.createElement('video');
+      video.className = 'w-full h-full object-contain bg-black';
+      video.setAttribute('preload', 'none');
+      video.autoplay = true;
+      video.playsInline = true;
+      video.controls = true;
+      if (posterImg) {
+        video.poster = posterImg.currentSrc || posterImg.src;
+      }
+      video.src = streamUrl;
+      activeVideoEl = video;
+
+      video.addEventListener('playing', () => {
+        bufferPill.remove();
+      });
+      video.addEventListener('canplay', () => {
+        bufferPill.remove();
+      });
+      video.addEventListener('ended', () => {
+        // Return cleanly to poster or stay ready without holding extra state
+        bufferPill.remove();
+      });
+      video.addEventListener('error', () => {
+        // Seamless fallback to Google Drive preview embed if direct stream fails
+        bufferPill.remove();
+        video.remove();
+        activeVideoEl = null;
+
+        const iframe = document.createElement('iframe');
+        iframe.src = previewUrl;
+        iframe.title = `${title} video player`;
+        iframe.className = 'w-full h-full border-0 bg-black';
+        iframe.allow = 'autoplay; fullscreen';
+        iframe.allowFullscreen = true;
+        activeIframeEl = iframe;
+        mount.appendChild(iframe);
+      });
+
+      mount.append(video, overlayControls, bufferPill);
+      video.play().catch(() => {
+        bufferPill.remove();
+      });
+
+      scheduleTransformUpdate();
+    };
+
+    // Card Click & Keyboard Activation
+    cards.forEach((card) => {
+      card.addEventListener('click', (e) => {
+        if (dragDistance > 6) {
+          e.preventDefault();
+          return;
+        }
+        if ((e.target as HTMLElement).closest('[data-video-mount]')) {
+          return;
+        }
+        playCardInPlace(card);
+      });
+
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          if (card.dataset.playing === 'true') return;
+          e.preventDefault();
+          playCardInPlace(card);
+        } else if (e.key === 'Escape' && card.dataset.playing === 'true') {
+          e.preventDefault();
+          stopActivePlayback();
+        }
+      });
+    });
+
+    // Pointer Drag Physics for Smooth Horizontal Arc Browsing
+    track.addEventListener('pointerdown', (e) => {
+      if ((e.target as HTMLElement).closest('video, button, iframe')) return;
+      isPointerDown = true;
+      startX = e.clientX;
+      startScrollLeft = track.scrollLeft;
+      dragDistance = 0;
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isPointerDown) return;
+      const dx = e.clientX - startX;
+      dragDistance = Math.max(dragDistance, Math.abs(dx));
+      track.scrollLeft = startScrollLeft - dx;
+      scheduleTransformUpdate();
+    });
+
+    window.addEventListener('pointerup', () => {
+      isPointerDown = false;
+      window.setTimeout(() => {
+        dragDistance = 0;
+      }, 40);
+    });
+
+    // Arrow Step Navigation
+    const stepArc = (direction: -1 | 1) => {
+      const trackRect = track.getBoundingClientRect();
+      const center = trackRect.left + trackRect.width / 2;
+      let currentIdx = 0;
+      let minDist = Infinity;
+
+      cards.forEach((card, idx) => {
+        const rect = card.getBoundingClientRect();
+        const dist = Math.abs(rect.left + rect.width / 2 - center);
+        if (dist < minDist) {
+          minDist = dist;
+          currentIdx = idx;
+        }
+      });
+
+      const nextIdx = Math.max(0, Math.min(cards.length - 1, currentIdx + direction));
+      scrollCardToCenter(cards[nextIdx], true);
+    };
+
+    prevBtn?.addEventListener('click', () => stepArc(-1));
+    nextBtn?.addEventListener('click', () => stepArc(1));
+
+    track.addEventListener('scroll', scheduleTransformUpdate, { passive: true });
+    window.addEventListener('resize', scheduleTransformUpdate, { passive: true });
+
+    // Center the flagship card cleanly on initial load
+    const centerCard = cards[initialCenter] || cards[0];
+    if (centerCard) {
+      scrollCardToCenter(centerCard, false);
+    }
+    updateArcTransforms();
+  })();
+</script>

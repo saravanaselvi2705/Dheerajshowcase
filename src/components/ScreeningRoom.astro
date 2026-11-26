@@ -1,0 +1,973 @@
+---
+import {
+  CONTACT_INFO,
+  SCREENING_CATEGORIES,
+  SCREENING_PROJECTS,
+  getDrivePreviewUrl,
+  getDriveStreamUrl,
+  type ScreeningProject,
+} from '../data/projects';
+
+interface Props {
+  projects?: ScreeningProject[];
+}
+
+const { projects = SCREENING_PROJECTS } = Astro.props;
+const initialProject = projects[0];
+const categories = SCREENING_CATEGORIES;
+---
+
+<div
+  id="screening-room"
+  class="min-h-dvh flex flex-col bg-[#141517] text-[#E8D2B5]"
+  data-total-cuts={projects.length}
+>
+  <!-- 1. HEADER STRIP -->
+  <header
+    class="sticky top-0 z-30 border-b border-[#A5A79B]/18 bg-[#141517]/92 backdrop-blur-md"
+  >
+    <div
+      class="mx-auto max-w-[1440px] px-4 sm:px-6 py-2.5 flex flex-wrap lg:flex-nowrap items-center justify-between gap-3"
+    >
+      <!-- Left: Editor Name -->
+      <div class="flex items-center gap-2.5 min-w-0 shrink-0">
+        <span
+          class="inline-block h-2 w-2 rounded-full bg-[#590907] ring-2 ring-[#E8D2B5]/40 shrink-0"
+          aria-hidden="true"
+        ></span>
+        <div class="truncate">
+          <span
+            class="font-display text-xs sm:text-sm font-bold tracking-[0.14em] uppercase text-[#E8D2B5]"
+          >
+            {CONTACT_INFO.editorName}
+          </span>
+          <span class="mx-1.5 text-[#A5A79B]/60">—</span>
+          <span
+            class="text-xs sm:text-[13px] tracking-[0.06em] uppercase text-[#A5A79B] font-medium"
+          >
+            {CONTACT_INFO.subtitle}
+          </span>
+        </div>
+      </div>
+
+      <!-- Center: Category Filter Pills -->
+      <nav
+        aria-label="Filter screening cuts by category"
+        role="tablist"
+        class="order-3 lg:order-2 w-full lg:w-auto flex items-center gap-1.5 overflow-x-auto pb-0.5 lg:pb-0 filmstrip-scroll"
+      >
+        {
+          categories.map((category, idx) => {
+            const isDefault = idx === 0;
+            return (
+              <button
+                type="button"
+                role="tab"
+                aria-selected={isDefault ? 'true' : 'false'}
+                data-filter-pill={category}
+                class:list={[
+                  'sr-filter-pill shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium tracking-wide transition-all duration-200 cursor-pointer border',
+                  isDefault
+                    ? 'bg-[#590907] border-[#590907] text-[#E8D2B5] shadow-[0_0_16px_rgba(89,9,7,0.45)]'
+                    : 'bg-[#1B1C1F] border-[#A5A79B]/22 text-[#A5A79B] hover:border-[#A5A79B]/55 hover:text-[#E8D2B5]',
+                ]}
+              >
+                {category}
+              </button>
+            );
+          })
+        }
+      </nav>
+
+      <!-- Right: Quick Actions -->
+      <div class="order-2 lg:order-3 flex items-center gap-2 shrink-0">
+        <button
+          id="sr-play-all-btn"
+          type="button"
+          class="inline-flex items-center gap-2 rounded-full bg-[#590907] hover:bg-[#6f0c09] border border-[#E8D2B5]/20 px-3.5 sm:px-4 py-1.5 text-xs font-semibold tracking-wider uppercase text-[#E8D2B5] shadow-[0_6px_20px_rgba(89,9,7,0.45)] transition-all cursor-pointer"
+        >
+          <span id="sr-play-all-icon" aria-hidden="true">▶</span>
+          <span id="sr-play-all-label">Play All in Sequence</span>
+        </button>
+
+        <a
+          href={CONTACT_INFO.whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 rounded-full border border-[#A5A79B]/30 hover:border-[#E8D2B5]/70 bg-[#1B1C1F] px-3.5 py-1.5 text-xs font-medium tracking-wide text-[#E8D2B5] transition-colors"
+        >
+          <span class="hidden sm:inline">Contact / WhatsApp</span>
+          <span class="sm:hidden">WhatsApp</span>
+          <span aria-hidden="true" class="text-[#A5A79B]">↗</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN SCREENING WORKSPACE -->
+  <main class="flex-1 flex flex-col justify-between mx-auto w-full max-w-[1440px] px-4 sm:px-6 pt-3 sm:pt-4 pb-3 gap-3 sm:gap-4">
+    <!-- 2. MASTER CINEMA STAGE (Above the Fold) -->
+    <section aria-label="Master Cinema Stage" class="flex flex-col gap-2.5">
+      <!-- Outer Matte Theatre Frame -->
+      <div
+        id="sr-stage-shell"
+        style="container-type: size;"
+        class="relative w-full h-[clamp(240px,54dvh,540px)] rounded-xl border border-[#A5A79B]/20 bg-[#0A0B0C] flex items-center justify-center overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.7)]"
+      >
+        <!-- Ambient Subtle Radial Vignette -->
+        <div
+          class="pointer-events-none absolute inset-0 opacity-60"
+          style="background: radial-gradient(ellipse 75% 65% at 50% 50%, rgba(89, 9, 7, 0.14), transparent 72%);"
+          aria-hidden="true"
+        ></div>
+
+        <!-- Dynamic Aspect Ratio Viewport (16:9 Landscape / 9:16 Vertical) -->
+        <div
+          id="sr-aspect-box"
+          data-aspect={initialProject.aspect}
+          class:list={[
+            'relative z-10 bg-black overflow-hidden transition-all duration-300 ease-out flex items-center justify-center group',
+            initialProject.aspect === '9:16'
+              ? 'w-[min(100cqw,calc(100cqh*9/16))] aspect-[9/16] shadow-[0_0_48px_rgba(0,0,0,0.9)] border-x border-[#A5A79B]/18'
+              : 'w-[min(100cqw,calc(100cqh*16/9),960px)] aspect-video',
+          ]}
+        >
+          <!-- Primary HTML5 Responsive Video Player -->
+          <video
+            id="sr-video"
+            class="w-full h-full object-contain bg-black cursor-pointer"
+            src={getDriveStreamUrl(initialProject.driveId)}
+            poster={initialProject.thumbnail}
+            preload="metadata"
+            playsinline
+          ></video>
+
+          <!-- Fallback Google Drive Preview Iframe (Activated only if direct stream errors) -->
+          <iframe
+            id="sr-fallback-iframe"
+            title="Google Drive fallback video player"
+            src="about:blank"
+            class="hidden w-full h-full border-0 bg-black"
+            allow="autoplay; fullscreen"
+            allowfullscreen
+          ></iframe>
+
+          <!-- Buffering / Loading Indicator -->
+          <div
+            id="sr-buffering"
+            class="pointer-events-none hidden absolute inset-0 z-20 flex items-center justify-center bg-black/45 backdrop-blur-[1px]"
+            aria-hidden="true"
+          >
+            <div class="flex items-center gap-2.5 rounded-full border border-[#A5A79B]/30 bg-[#141517]/90 px-3.5 py-1.5 text-[11px] font-mono tracking-wider uppercase text-[#E8D2B5]">
+              <span class="h-2.5 w-2.5 rounded-full border-2 border-[#E8D2B5] border-t-transparent animate-spin"></span>
+              <span>Buffering Cut</span>
+            </div>
+          </div>
+
+          <!-- Center Big Play Overlay (shown when paused / initial ready state) -->
+          <button
+            id="sr-center-play"
+            type="button"
+            aria-label="Play current video"
+            class="absolute inset-0 z-10 flex items-center justify-center bg-black/25 transition-opacity duration-200 cursor-pointer"
+          >
+            <span class="flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#590907]/92 hover:bg-[#590907] border border-[#E8D2B5]/45 text-[#E8D2B5] shadow-[0_10px_32px_rgba(0,0,0,0.75)] transition-transform duration-200 hover:scale-105">
+              <svg viewBox="0 0 24 24" class="w-6 h-6 ml-0.5 fill-current" aria-hidden="true">
+                <path d="M8 5.14v14l11-7-11-7z" />
+              </svg>
+            </span>
+          </button>
+
+          <!-- Auto-Advance Toast -->
+          <div
+            id="sr-toast"
+            role="status"
+            aria-live="polite"
+            class="pointer-events-none opacity-0 translate-y-1 transition-all duration-200 absolute top-3 left-3 z-20 rounded-md border border-[#590907] bg-[#141517]/92 px-2.5 py-1 text-[11px] font-mono tracking-wider uppercase text-[#E8D2B5] shadow-lg"
+          ></div>
+
+          <!-- Top-Right Aspect & Fallback Indicator -->
+          <div class="pointer-events-none absolute top-3 right-3 z-20 flex items-center gap-1.5">
+            <span
+              id="sr-aspect-badge"
+              class="rounded border border-[#A5A79B]/28 bg-[#141517]/82 backdrop-blur-sm px-2 py-0.5 font-mono text-[10px] tracking-wider text-[#A5A79B]"
+            >
+              {initialProject.aspect}
+            </span>
+          </div>
+
+          <!-- Custom Cinema Transport Controls Bar -->
+          <div
+            id="sr-controls"
+            class="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/92 via-black/65 to-transparent px-3 sm:px-4 pt-8 pb-2.5 transition-opacity duration-200 opacity-100 group-hover:opacity-100"
+          >
+            <!-- Scrubber Track -->
+            <div class="mb-2 flex items-center gap-2">
+              <input
+                id="sr-scrubber"
+                type="range"
+                min="0"
+                max="1000"
+                value="0"
+                aria-label="Seek video timeline"
+                class="sr-scrubber w-full h-1.5 appearance-none rounded-full bg-[#A5A79B]/30 accent-[#590907] cursor-pointer"
+              />
+            </div>
+
+            <div class="flex items-center justify-between gap-2 text-xs">
+              <!-- Left Transport Buttons + Timecode -->
+              <div class="flex items-center gap-1.5 sm:gap-2.5">
+                <button
+                  id="sr-prev-btn"
+                  type="button"
+                  aria-label="Previous cut"
+                  title="Previous cut (←)"
+                  class="p-1.5 rounded text-[#A5A79B] hover:text-[#E8D2B5] transition-colors cursor-pointer"
+                >
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current" aria-hidden="true">
+                    <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+                  </svg>
+                </button>
+
+                <button
+                  id="sr-toggle-play"
+                  type="button"
+                  aria-label="Play or pause video"
+                  title="Play / Pause (Space)"
+                  class="flex items-center justify-center w-7 h-7 rounded-full bg-[#590907] hover:bg-[#700c09] text-[#E8D2B5] transition-colors cursor-pointer"
+                >
+                  <svg id="sr-icon-play" viewBox="0 0 24 24" class="w-3.5 h-3.5 ml-0.5 fill-current" aria-hidden="true">
+                    <path d="M8 5.14v14l11-7-11-7z" />
+                  </svg>
+                  <svg id="sr-icon-pause" viewBox="0 0 24 24" class="hidden w-3.5 h-3.5 fill-current" aria-hidden="true">
+                    <path d="M6 5h4v14H6zm8 0h4v14h-4z" />
+                  </svg>
+                </button>
+
+                <button
+                  id="sr-next-btn"
+                  type="button"
+                  aria-label="Next cut"
+                  title="Next cut (→)"
+                  class="p-1.5 rounded text-[#A5A79B] hover:text-[#E8D2B5] transition-colors cursor-pointer"
+                >
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current" aria-hidden="true">
+                    <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                  </svg>
+                </button>
+
+                <span
+                  id="sr-timecode"
+                  class="ml-1 font-mono text-[11px] tracking-wider text-[#A5A79B] tabular-nums"
+                >
+                  00:00 / {initialProject.runtime}
+                </span>
+              </div>
+
+              <!-- Right Audio & Fullscreen Controls -->
+              <div class="flex items-center gap-1.5 sm:gap-2">
+                <button
+                  id="sr-mute-btn"
+                  type="button"
+                  aria-label="Toggle mute"
+                  title="Mute / Unmute (M)"
+                  class="p-1.5 rounded text-[#A5A79B] hover:text-[#E8D2B5] transition-colors cursor-pointer"
+                >
+                  <svg id="sr-icon-vol-on" viewBox="0 0 24 24" class="w-4 h-4 fill-current" aria-hidden="true">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+                  </svg>
+                  <svg id="sr-icon-vol-off" viewBox="0 0 24 24" class="hidden w-4 h-4 fill-current" aria-hidden="true">
+                    <path d="M16.5 12A4.5 4.5 0 0014 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.796 8.796 0 0021 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 003.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
+                  </svg>
+                </button>
+
+                <button
+                  id="sr-fullscreen-btn"
+                  type="button"
+                  aria-label="Toggle fullscreen"
+                  title="Fullscreen (F)"
+                  class="p-1.5 rounded text-[#A5A79B] hover:text-[#E8D2B5] transition-colors cursor-pointer"
+                >
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current" aria-hidden="true">
+                    <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Minimal HUD Below the Player -->
+      <div
+        class="rounded-xl border border-[#A5A79B]/16 bg-[#1B1C1F]/75 px-4 py-2.5 flex flex-wrap items-center justify-between gap-x-6 gap-y-2"
+      >
+        <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 min-w-0">
+          <div class="flex items-center gap-2 min-w-0">
+            <span
+              id="sr-hud-index"
+              class="font-mono text-[11px] uppercase tracking-[0.14em] text-[#A5A79B] shrink-0"
+            >
+              CUT 01 / {String(projects.length).padStart(2, '0')}
+            </span>
+            <span class="text-[#A5A79B]/40" aria-hidden="true">|</span>
+            <h1
+              id="sr-hud-title"
+              class="text-sm sm:text-base font-semibold tracking-wide text-[#E8D2B5] truncate"
+            >
+              {initialProject.title}
+            </h1>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+            <span class="text-[#A5A79B]">
+              Client: <strong id="sr-hud-client" class="font-medium text-[#E8D2B5]">{initialProject.client}</strong>
+            </span>
+            <span class="text-[#A5A79B]/35" aria-hidden="true">•</span>
+            <span class="text-[#A5A79B]">
+              Role: <strong id="sr-hud-role" class="font-medium text-[#E8D2B5]">{initialProject.role}</strong>
+            </span>
+            <span class="text-[#A5A79B]/35" aria-hidden="true">•</span>
+            <span class="text-[#A5A79B]">
+              Runtime: <strong id="sr-hud-runtime" class="font-mono font-medium text-[#E8D2B5]">{initialProject.runtime}</strong>
+            </span>
+          </div>
+        </div>
+
+        <!-- Continuous Binge Playback Toggle -->
+        <div class="flex items-center gap-3 shrink-0 ml-auto">
+          <button
+            id="sr-auto-advance-btn"
+            type="button"
+            aria-pressed="true"
+            class="inline-flex items-center gap-1.5 rounded-md border border-[#590907]/80 bg-[#590907]/25 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[#E8D2B5] hover:bg-[#590907]/45 transition-colors cursor-pointer"
+          >
+            <span id="sr-auto-dot" class="h-1.5 w-1.5 rounded-full bg-[#E8D2B5]"></span>
+            <span id="sr-auto-label">Auto-Advance: ON</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ONE-CLICK PLAYLIST / FILMSTRIP -->
+    <section aria-label="Screening Playlist Filmstrip" class="flex flex-col gap-2">
+      <div class="flex items-center justify-between gap-2 px-0.5">
+        <div class="flex items-center gap-2.5">
+          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-[#A5A79B]">
+            Screening Queue
+          </span>
+          <span
+            id="sr-queue-count"
+            class="font-mono text-[11px] text-[#E8D2B5]/85"
+          >
+            {projects.length} CUTS
+          </span>
+        </div>
+
+        <div class="hidden sm:flex items-center gap-1.5">
+          <button
+            id="sr-strip-left"
+            type="button"
+            aria-label="Scroll playlist left"
+            class="w-7 h-7 rounded-full border border-[#A5A79B]/22 hover:border-[#E8D2B5]/60 bg-[#1B1C1F] text-[#A5A79B] hover:text-[#E8D2B5] flex items-center justify-center text-xs transition-colors cursor-pointer"
+          >
+            ‹
+          </button>
+          <button
+            id="sr-strip-right"
+            type="button"
+            aria-label="Scroll playlist right"
+            class="w-7 h-7 rounded-full border border-[#A5A79B]/22 hover:border-[#E8D2B5]/60 bg-[#1B1C1F] text-[#A5A79B] hover:text-[#E8D2B5] flex items-center justify-center text-xs transition-colors cursor-pointer"
+          >
+            ›
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="sr-filmstrip"
+        role="listbox"
+        aria-label="Select project to screen"
+        class="filmstrip-scroll flex items-stretch gap-3 overflow-x-auto pb-2 snap-x snap-mandatory"
+      >
+        {
+          projects.map((project, idx) => {
+            const isActive = idx === 0;
+            return (
+              <button
+                type="button"
+                role="option"
+                aria-selected={isActive ? 'true' : 'false'}
+                data-project-card
+                data-id={project.id}
+                data-drive-id={project.driveId}
+                data-stream-url={getDriveStreamUrl(project.driveId)}
+                data-preview-url={getDrivePreviewUrl(project.driveId)}
+                data-title={project.title}
+                data-client={project.client}
+                data-category={project.category}
+                data-role={project.role}
+                data-runtime={project.runtime}
+                data-aspect={project.aspect}
+                data-thumbnail={project.thumbnail}
+                data-active={isActive ? 'true' : 'false'}
+                class:list={[
+                  'sr-card snap-start group relative shrink-0 w-[210px] sm:w-[228px] rounded-lg overflow-hidden text-left transition-all duration-200 cursor-pointer bg-[#1B1C1F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8D2B5]',
+                  isActive
+                    ? 'border-2 border-[#590907] shadow-[0_0_24px_rgba(89,9,7,0.45)]'
+                    : 'border border-[#A5A79B]/20 hover:border-[#A5A79B]/55',
+                ]}
+              >
+                {/* 16:9 Thumbnail Frame */}
+                <div class="relative aspect-video w-full bg-[#0A0B0C] overflow-hidden">
+                  <img
+                    src={project.thumbnail}
+                    alt={`${project.title} preview frame`}
+                    loading={idx < 5 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div
+                    class="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#141517]/88 via-transparent to-[#141517]/30"
+                    aria-hidden="true"
+                  ></div>
+
+                  {/* Top-Left: Animated Soundwave / Equalizer Badge (visible when active) */}
+                  <span
+                    data-eq-badge
+                    data-eq-state="paused"
+                    class:list={[
+                      'absolute top-2 left-2 items-center gap-1.5 rounded px-2 py-1 bg-[#590907] border border-[#E8D2B5]/30 text-[10px] font-mono uppercase tracking-wider text-[#E8D2B5] shadow-md',
+                      isActive ? 'inline-flex' : 'hidden',
+                    ]}
+                  >
+                    <span class="flex items-end gap-[2px] h-2.5" aria-hidden="true">
+                      <span class="sr-eq-bar w-[2px] h-full bg-[#E8D2B5] rounded-full"></span>
+                      <span class="sr-eq-bar w-[2px] h-full bg-[#E8D2B5] rounded-full"></span>
+                      <span class="sr-eq-bar w-[2px] h-full bg-[#E8D2B5] rounded-full"></span>
+                      <span class="sr-eq-bar w-[2px] h-full bg-[#E8D2B5] rounded-full"></span>
+                    </span>
+                    <span data-eq-text>CUED</span>
+                  </span>
+
+                  {/* Top-Right: Aspect Ratio Tag */}
+                  <span class="absolute top-2 right-2 rounded bg-[#141517]/82 border border-[#A5A79B]/25 px-1.5 py-0.5 font-mono text-[10px] text-[#A5A79B]">
+                    {project.aspect}
+                  </span>
+
+                  {/* Bottom-Right: Runtime Timecode */}
+                  <span class="absolute bottom-1.5 right-2 rounded bg-[#141517]/85 px-1.5 py-0.5 font-mono text-[10px] text-[#E8D2B5] tabular-nums">
+                    {project.runtime}
+                  </span>
+
+                  {/* Bottom-Left: Cut Number */}
+                  <span class="absolute bottom-1.5 left-2 font-mono text-[10px] text-[#A5A79B]">
+                    #{String(idx + 1).padStart(2, '0')}
+                  </span>
+                </div>
+
+                {/* Card Metadata */}
+                <div class="px-2.5 py-2 flex flex-col gap-0.5">
+                  <p class="text-xs font-medium text-[#E8D2B5] truncate group-hover:text-white transition-colors">
+                    {project.title}
+                  </p>
+                  <div class="flex items-center justify-between gap-2 text-[11px] text-[#A5A79B]">
+                    <span class="truncate">{project.client}</span>
+                    <span class="shrink-0 font-mono text-[10px] opacity-80">
+                      {project.category === 'Documentary / Long-Form'
+                        ? 'DOC / LONG'
+                        : project.category === 'Short-Form Reels'
+                          ? 'REEL'
+                          : 'COMMERCIAL'}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            );
+          })
+        }
+      </div>
+    </section>
+  </main>
+
+  <!-- 5. FOOTER CONTACT BAR -->
+  <footer class="border-t border-[#A5A79B]/18 bg-[#141517]">
+    <div
+      class="mx-auto max-w-[1440px] px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-xs"
+    >
+      <p class="text-[#A5A79B] tracking-wide">
+        Available for Commercial &amp; Short-Form Post-Production
+      </p>
+
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-1.5">
+        <a
+          href={CONTACT_INFO.whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 text-[#E8D2B5] hover:text-white transition-colors font-medium"
+        >
+          <span class="h-1.5 w-1.5 rounded-full bg-[#590907]" aria-hidden="true"></span>
+          <span>WhatsApp</span>
+        </a>
+
+        <a
+          href={CONTACT_INFO.phoneHref}
+          class="font-mono text-[#A5A79B] hover:text-[#E8D2B5] transition-colors"
+        >
+          {CONTACT_INFO.phoneDisplay}
+        </a>
+
+        <a
+          href={CONTACT_INFO.emailHref}
+          class="text-[#A5A79B] hover:text-[#E8D2B5] transition-colors"
+        >
+          {CONTACT_INFO.email}
+        </a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- Lightweight State Script: Video Switching, Category Filtering, Auto-Advance & Transport -->
+<script>
+  (() => {
+    const root = document.getElementById('screening-room');
+    if (!root) return;
+
+    const video = document.getElementById('sr-video') as HTMLVideoElement | null;
+    const fallbackIframe = document.getElementById('sr-fallback-iframe') as HTMLIFrameElement | null;
+    const aspectBox = document.getElementById('sr-aspect-box');
+    const aspectBadge = document.getElementById('sr-aspect-badge');
+    const centerPlayBtn = document.getElementById('sr-center-play');
+    const bufferingEl = document.getElementById('sr-buffering');
+    const toastEl = document.getElementById('sr-toast');
+
+    const togglePlayBtn = document.getElementById('sr-toggle-play');
+    const iconPlay = document.getElementById('sr-icon-play');
+    const iconPause = document.getElementById('sr-icon-pause');
+    const prevBtn = document.getElementById('sr-prev-btn');
+    const nextBtn = document.getElementById('sr-next-btn');
+    const muteBtn = document.getElementById('sr-mute-btn');
+    const iconVolOn = document.getElementById('sr-icon-vol-on');
+    const iconVolOff = document.getElementById('sr-icon-vol-off');
+    const fullscreenBtn = document.getElementById('sr-fullscreen-btn');
+    const scrubber = document.getElementById('sr-scrubber') as HTMLInputElement | null;
+    const timecodeEl = document.getElementById('sr-timecode');
+
+    const hudIndex = document.getElementById('sr-hud-index');
+    const hudTitle = document.getElementById('sr-hud-title');
+    const hudClient = document.getElementById('sr-hud-client');
+    const hudRole = document.getElementById('sr-hud-role');
+    const hudRuntime = document.getElementById('sr-hud-runtime');
+
+    const queueCountEl = document.getElementById('sr-queue-count');
+    const filmstrip = document.getElementById('sr-filmstrip');
+    const stripLeftBtn = document.getElementById('sr-strip-left');
+    const stripRightBtn = document.getElementById('sr-strip-right');
+
+    const playAllBtn = document.getElementById('sr-play-all-btn');
+    const playAllLabel = document.getElementById('sr-play-all-label');
+    const autoAdvanceBtn = document.getElementById('sr-auto-advance-btn');
+    const autoLabel = document.getElementById('sr-auto-label');
+    const autoDot = document.getElementById('sr-auto-dot');
+
+    const filterPills = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-filter-pill]'));
+    const allCards = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-project-card]'));
+
+    if (!video || !aspectBox || allCards.length === 0) return;
+
+    let activeCategory = 'All';
+    let activeCard: HTMLButtonElement = allCards[0];
+    let autoAdvance = true;
+    let isSeeking = false;
+    let toastTimer: number | undefined;
+    let usingFallback = false;
+
+    const formatTime = (sec: number): string => {
+      if (!Number.isFinite(sec) || sec < 0) return '00:00';
+      const total = Math.floor(sec);
+      const mins = Math.floor(total / 60);
+      const secs = total % 60;
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    };
+
+    const getVisibleQueue = (): HTMLButtonElement[] =>
+      allCards.filter((card) => !card.classList.contains('hidden'));
+
+    const showToast = (msg: string) => {
+      if (!toastEl) return;
+      toastEl.textContent = msg;
+      toastEl.classList.remove('opacity-0', 'translate-y-1');
+      toastEl.classList.add('opacity-100', 'translate-y-0');
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        toastEl.classList.add('opacity-0', 'translate-y-1');
+        toastEl.classList.remove('opacity-100', 'translate-y-0');
+      }, 2400);
+    };
+
+    const setAspectMode = (aspect: string) => {
+      const isVertical = aspect === '9:16';
+      aspectBox.dataset.aspect = isVertical ? '9:16' : '16:9';
+      if (isVertical) {
+        aspectBox.classList.remove('w-[min(100cqw,calc(100cqh*16/9),960px)]', 'aspect-video');
+        aspectBox.classList.add(
+          'w-[min(100cqw,calc(100cqh*9/16))]',
+          'aspect-[9/16]',
+          'shadow-[0_0_48px_rgba(0,0,0,0.9)]',
+          'border-x',
+          'border-[#A5A79B]/18',
+        );
+      } else {
+        aspectBox.classList.remove(
+          'w-[min(100cqw,calc(100cqh*9/16))]',
+          'aspect-[9/16]',
+          'shadow-[0_0_48px_rgba(0,0,0,0.9)]',
+          'border-x',
+          'border-[#A5A79B]/18',
+        );
+        aspectBox.classList.add('w-[min(100cqw,calc(100cqh*16/9),960px)]', 'aspect-video');
+      }
+      if (aspectBadge) {
+        aspectBadge.textContent = isVertical ? '9:16' : '16:9';
+      }
+    };
+
+    const syncPlayUI = (playing: boolean) => {
+      iconPlay?.classList.toggle('hidden', playing);
+      iconPause?.classList.toggle('hidden', !playing);
+      centerPlayBtn?.classList.toggle('opacity-0', playing);
+      centerPlayBtn?.classList.toggle('pointer-events-none', playing);
+
+      const eqBadge = activeCard.querySelector<HTMLElement>('[data-eq-badge]');
+      const eqText = activeCard.querySelector<HTMLElement>('[data-eq-text]');
+      if (eqBadge) {
+        eqBadge.dataset.eqState = playing ? 'playing' : 'paused';
+      }
+      if (eqText) {
+        eqText.textContent = playing ? 'PLAYING' : 'PAUSED';
+      }
+
+      if (playAllLabel) {
+        playAllLabel.textContent = playing && autoAdvance ? 'Screening Sequence' : 'Play All in Sequence';
+      }
+    };
+
+    const updateCardHighlight = (targetCard: HTMLButtonElement) => {
+      allCards.forEach((card) => {
+        const isCurrent = card === targetCard;
+        card.dataset.active = isCurrent ? 'true' : 'false';
+        card.setAttribute('aria-selected', isCurrent ? 'true' : 'false');
+
+        card.classList.toggle('border-2', isCurrent);
+        card.classList.toggle('border-[#590907]', isCurrent);
+        card.classList.toggle('shadow-[0_0_24px_rgba(89,9,7,0.45)]', isCurrent);
+        card.classList.toggle('border', !isCurrent);
+        card.classList.toggle('border-[#A5A79B]/20', !isCurrent);
+
+        const eqBadge = card.querySelector<HTMLElement>('[data-eq-badge]');
+        if (eqBadge) {
+          eqBadge.classList.toggle('hidden', !isCurrent);
+          eqBadge.classList.toggle('inline-flex', isCurrent);
+        }
+      });
+
+      targetCard.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
+      });
+    };
+
+    const updateHUD = (card: HTMLButtonElement) => {
+      const queue = getVisibleQueue();
+      const pos = Math.max(0, queue.indexOf(card)) + 1;
+      if (hudIndex) {
+        hudIndex.textContent = `CUT ${String(pos).padStart(2, '0')} / ${String(queue.length).padStart(2, '0')}`;
+      }
+      if (hudTitle) hudTitle.textContent = card.dataset.title || '';
+      if (hudClient) hudClient.textContent = card.dataset.client || '';
+      if (hudRole) hudRole.textContent = card.dataset.role || '';
+      if (hudRuntime) hudRuntime.textContent = card.dataset.runtime || '00:00';
+      if (timecodeEl) {
+        timecodeEl.textContent = `00:00 / ${card.dataset.runtime || '00:00'}`;
+      }
+      if (scrubber) scrubber.value = '0';
+    };
+
+    const disableFallbackMode = () => {
+      if (!usingFallback) return;
+      usingFallback = false;
+      video.classList.remove('hidden');
+      if (fallbackIframe) {
+        fallbackIframe.src = 'about:blank';
+        fallbackIframe.classList.add('hidden');
+      }
+    };
+
+    const enableFallbackMode = (previewUrl: string) => {
+      if (!fallbackIframe) return;
+      usingFallback = true;
+      bufferingEl?.classList.add('hidden');
+      centerPlayBtn?.classList.add('hidden');
+      video.pause();
+      video.classList.add('hidden');
+      fallbackIframe.src = previewUrl;
+      fallbackIframe.classList.remove('hidden');
+      showToast('Drive Embed Mode · Use Next Cut →');
+    };
+
+    const loadCut = (card: HTMLButtonElement, autoplay = true) => {
+      activeCard = card;
+      disableFallbackMode();
+      centerPlayBtn?.classList.remove('hidden');
+
+      setAspectMode(card.dataset.aspect || '16:9');
+      updateCardHighlight(card);
+      updateHUD(card);
+
+      const streamUrl = card.dataset.streamUrl || '';
+      const poster = card.dataset.thumbnail || '';
+
+      video.poster = poster;
+      if (video.src !== streamUrl) {
+        video.src = streamUrl;
+        video.load();
+      } else {
+        video.currentTime = 0;
+      }
+
+      if (autoplay) {
+        bufferingEl?.classList.remove('hidden');
+        const playPromise = video.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+          playPromise.catch(() => {
+            bufferingEl?.classList.add('hidden');
+            syncPlayUI(false);
+          });
+        }
+      } else {
+        syncPlayUI(false);
+      }
+    };
+
+    const stepQueue = (delta: number, autoplay = true, toastPrefix = '') => {
+      const queue = getVisibleQueue();
+      if (queue.length === 0) return;
+      const currentIndex = queue.indexOf(activeCard);
+      const nextIndex =
+        currentIndex === -1
+          ? 0
+          : (currentIndex + delta + queue.length) % queue.length;
+      const nextCard = queue[nextIndex];
+      loadCut(nextCard, autoplay);
+      if (toastPrefix) {
+        showToast(`${toastPrefix} ${nextCard.dataset.title || ''}`);
+      }
+    };
+
+    // 1. Filmstrip Click -> Instant Switch & Play
+    allCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        loadCut(card, true);
+      });
+    });
+
+    // 2. Category Filter Pills
+    filterPills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        const category = pill.dataset.filterPill || 'All';
+        if (category === activeCategory) return;
+        activeCategory = category;
+
+        filterPills.forEach((btn) => {
+          const selected = btn === pill;
+          btn.setAttribute('aria-selected', selected ? 'true' : 'false');
+          btn.classList.toggle('bg-[#590907]', selected);
+          btn.classList.toggle('border-[#590907]', selected);
+          btn.classList.toggle('text-[#E8D2B5]', selected);
+          btn.classList.toggle('shadow-[0_0_16px_rgba(89,9,7,0.45)]', selected);
+
+          btn.classList.toggle('bg-[#1B1C1F]', !selected);
+          btn.classList.toggle('border-[#A5A79B]/22', !selected);
+          btn.classList.toggle('text-[#A5A79B]', !selected);
+        });
+
+        let visibleCount = 0;
+        allCards.forEach((card) => {
+          const matches =
+            category === 'All' || card.dataset.category === category;
+          card.classList.toggle('hidden', !matches);
+          if (matches) visibleCount += 1;
+        });
+
+        if (queueCountEl) {
+          queueCountEl.textContent = `${visibleCount} ${visibleCount === 1 ? 'CUT' : 'CUTS'}`;
+        }
+
+        const queue = getVisibleQueue();
+        if (queue.length > 0) {
+          if (!queue.includes(activeCard)) {
+            const wasPlaying = !video.paused && !video.ended;
+            loadCut(queue[0], wasPlaying);
+          } else {
+            updateHUD(activeCard);
+          }
+        }
+      });
+    });
+
+    // 3. Play All in Sequence Quick Action
+    playAllBtn?.addEventListener('click', () => {
+      autoAdvance = true;
+      updateAutoAdvanceUI();
+      const queue = getVisibleQueue();
+      if (queue.length === 0) return;
+      loadCut(queue[0], true);
+      showToast(`Sequence Started · ${queue.length} Cuts`);
+    });
+
+    // 4. Auto-Advance Toggle & Binge Playback on `ended`
+    const updateAutoAdvanceUI = () => {
+      if (!autoAdvanceBtn || !autoLabel || !autoDot) return;
+      autoAdvanceBtn.setAttribute('aria-pressed', autoAdvance ? 'true' : 'false');
+      autoLabel.textContent = autoAdvance ? 'Auto-Advance: ON' : 'Auto-Advance: OFF';
+      autoAdvanceBtn.classList.toggle('bg-[#590907]/25', autoAdvance);
+      autoAdvanceBtn.classList.toggle('border-[#590907]/80', autoAdvance);
+      autoAdvanceBtn.classList.toggle('bg-[#141517]', !autoAdvance);
+      autoAdvanceBtn.classList.toggle('border-[#A5A79B]/25', !autoAdvance);
+      autoDot.classList.toggle('opacity-30', !autoAdvance);
+    };
+
+    autoAdvanceBtn?.addEventListener('click', () => {
+      autoAdvance = !autoAdvance;
+      updateAutoAdvanceUI();
+      syncPlayUI(!video.paused && !video.ended);
+    });
+
+    video.addEventListener('ended', () => {
+      if (autoAdvance) {
+        stepQueue(1, true, 'Auto-Next →');
+      } else {
+        syncPlayUI(false);
+      }
+    });
+
+    // 5. Video Element Lifecycle & Transport Controls
+    const togglePlay = () => {
+      if (usingFallback) return;
+      if (video.paused || video.ended) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    };
+
+    video.addEventListener('click', togglePlay);
+    centerPlayBtn?.addEventListener('click', togglePlay);
+    togglePlayBtn?.addEventListener('click', togglePlay);
+
+    prevBtn?.addEventListener('click', () => stepQueue(-1, true, 'Prev Cut →'));
+    nextBtn?.addEventListener('click', () => stepQueue(1, true, 'Next Cut →'));
+
+    video.addEventListener('play', () => syncPlayUI(true));
+    video.addEventListener('playing', () => {
+      bufferingEl?.classList.add('hidden');
+      syncPlayUI(true);
+    });
+    video.addEventListener('pause', () => syncPlayUI(false));
+    video.addEventListener('waiting', () => bufferingEl?.classList.remove('hidden'));
+    video.addEventListener('canplay', () => bufferingEl?.classList.add('hidden'));
+
+    video.addEventListener('loadedmetadata', () => {
+      bufferingEl?.classList.add('hidden');
+      if (video.videoWidth && video.videoHeight) {
+        setAspectMode(video.videoHeight > video.videoWidth ? '9:16' : '16:9');
+      }
+      if (timecodeEl) {
+        const totalStr = Number.isFinite(video.duration)
+          ? formatTime(video.duration)
+          : activeCard.dataset.runtime || '00:00';
+        timecodeEl.textContent = `${formatTime(video.currentTime)} / ${totalStr}`;
+      }
+    });
+
+    video.addEventListener('timeupdate', () => {
+      if (isSeeking || !Number.isFinite(video.duration) || video.duration <= 0) return;
+      if (scrubber) {
+        scrubber.value = String(Math.round((video.currentTime / video.duration) * 1000));
+      }
+      if (timecodeEl) {
+        timecodeEl.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+      }
+    });
+
+    video.addEventListener('error', () => {
+      const previewUrl = activeCard.dataset.previewUrl;
+      if (previewUrl) {
+        enableFallbackMode(previewUrl);
+      }
+    });
+
+    // Scrubber Seeking
+    scrubber?.addEventListener('input', () => {
+      isSeeking = true;
+      if (Number.isFinite(video.duration) && video.duration > 0 && timecodeEl) {
+        const previewTime = (Number(scrubber.value) / 1000) * video.duration;
+        timecodeEl.textContent = `${formatTime(previewTime)} / ${formatTime(video.duration)}`;
+      }
+    });
+
+    scrubber?.addEventListener('change', () => {
+      if (Number.isFinite(video.duration) && video.duration > 0) {
+        video.currentTime = (Number(scrubber.value) / 1000) * video.duration;
+      }
+      isSeeking = false;
+    });
+
+    // Mute & Fullscreen
+    muteBtn?.addEventListener('click', () => {
+      video.muted = !video.muted;
+      iconVolOn?.classList.toggle('hidden', video.muted);
+      iconVolOff?.classList.toggle('hidden', !video.muted);
+    });
+
+    fullscreenBtn?.addEventListener('click', () => {
+      const target = aspectBox;
+      if (!document.fullscreenElement) {
+        target.requestFullscreen?.().catch(() => {});
+      } else {
+        document.exitFullscreen?.().catch(() => {});
+      }
+    });
+
+    // Filmstrip Arrow Scrolling
+    stripLeftBtn?.addEventListener('click', () => {
+      filmstrip?.scrollBy({ left: -320, behavior: 'smooth' });
+    });
+    stripRightBtn?.addEventListener('click', () => {
+      filmstrip?.scrollBy({ left: 320, behavior: 'smooth' });
+    });
+
+    // Keyboard Shortcuts for Creative Directors
+    document.addEventListener('keydown', (e) => {
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlay();
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        stepQueue(1, true);
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        stepQueue(-1, true);
+      } else if (e.key.toLowerCase() === 'm') {
+        muteBtn?.click();
+      } else if (e.key.toLowerCase() === 'f') {
+        fullscreenBtn?.click();
+      }
+    });
+  })();
+</script>
