@@ -28,7 +28,7 @@ export const SHOWCASE_META = {
   brand: 'Dheeraj C',
   statusBadge: 'Senior Video Editor & Delivery Lead · Kozhikode',
   kicker: 'POST-PRODUCTION SCREENING DECK',
-  headline: 'High-retention video editing that commands attention and drives results',
+  headline: 'HIGH-RETENTION VIDEO EDITING THAT COMMANDS ATTENTION AND DRIVES RESULTS',
   subheadline:
     'Commercials, high-impact social reels, motion graphics, and end-to-end delivery pipelines. Click any cut below to stream the preview.',
   whatsappNumber: '919539794989',
@@ -46,10 +46,6 @@ export const SHOWCASE_SERVICES = [
   { icon: '🎨', label: 'Color Grading & Sound Mix' },
 ] as const;
 
-function makeDriveStreamUrl(driveFileId: string): string {
-  return `https://drive.usercontent.google.com/download?id=${driveFileId}&export=download`;
-}
-
 function makeDrivePreviewUrl(driveFileId: string): string {
   return `https://drive.google.com/file/d/${driveFileId}/preview`;
 }
@@ -66,7 +62,7 @@ export const SHOWCASE_CUTS: ShowcaseCut[] = [
     duration: '00:45',
     role: 'Lead Editor · Motion & Sound Mix',
     thumbnail: wtTheaterAdThumb,
-    streamUrl: makeDriveStreamUrl('1QP2pzxXOpzSbSUuQau2OtFx9ca6vloGr'),
+    streamUrl: '/videos/wt-cinema-spot.mp4',
     previewUrl: makeDrivePreviewUrl('1QP2pzxXOpzSbSUuQau2OtFx9ca6vloGr'),
   },
   {
@@ -80,7 +76,7 @@ export const SHOWCASE_CUTS: ShowcaseCut[] = [
     duration: '00:38',
     role: 'Short-Form Edit · Kinetic Captions',
     thumbnail: wtCastingCallThumb,
-    streamUrl: makeDriveStreamUrl('12jt5dyp38otUmAP2Voynj6DRXBaRAmip'),
+    streamUrl: '/videos/wt-casting-call.mp4',
     previewUrl: makeDrivePreviewUrl('12jt5dyp38otUmAP2Voynj6DRXBaRAmip'),
   },
   {
@@ -94,7 +90,7 @@ export const SHOWCASE_CUTS: ShowcaseCut[] = [
     duration: '00:20',
     role: 'Motion Graphics · Color & Mix',
     thumbnail: xmasProdReelsThumb,
-    streamUrl: makeDriveStreamUrl('16wijCM8qxOtGSkBejQe_Na9GEb1deV5G'),
+    streamUrl: '/videos/christmas-festive-ad.mp4',
     previewUrl: makeDrivePreviewUrl('16wijCM8qxOtGSkBejQe_Na9GEb1deV5G'),
   },
   {
@@ -108,7 +104,7 @@ export const SHOWCASE_CUTS: ShowcaseCut[] = [
     duration: '02:14',
     role: 'Trailer Cut · Color Grade · QC',
     thumbnail: adoorTrailerThumb,
-    streamUrl: makeDriveStreamUrl('1--qsowMuLIFVx39LgHPiTXkjS_B_bcPj'),
+    streamUrl: '/videos/adoor-masterclass.mp4',
     previewUrl: makeDrivePreviewUrl('1--qsowMuLIFVx39LgHPiTXkjS_B_bcPj'),
   },
   {
@@ -122,7 +118,7 @@ export const SHOWCASE_CUTS: ShowcaseCut[] = [
     duration: '01:52',
     role: 'Senior Editor · Dialogue Sweetening',
     thumbnail: gopinathTrailerThumb,
-    streamUrl: makeDriveStreamUrl('1VYmzIKjvEo4oCpS4XC_W3wVdGpv0LG3v'),
+    streamUrl: '/videos/gopinath-masterclass.mp4',
     previewUrl: makeDrivePreviewUrl('1VYmzIKjvEo4oCpS4XC_W3wVdGpv0LG3v'),
   },
   {
@@ -136,7 +132,7 @@ export const SHOWCASE_CUTS: ShowcaseCut[] = [
     duration: '00:54',
     role: 'Retention Edit · Audio & Pacing',
     thumbnail: stallingVehicleThumb,
-    streamUrl: makeDriveStreamUrl('1IyTbHi9ojraw5m2LkNDj7M0o7OYWGa8j'),
+    streamUrl: '/videos/stalling-vehicle-reel.mp4',
     previewUrl: makeDrivePreviewUrl('1IyTbHi9ojraw5m2LkNDj7M0o7OYWGa8j'),
   },
 ];
