@@ -113,35 +113,36 @@ const dustParticles = [
   </header>
 
   <!-- B. INTRO / VALUE PROPOSITION (Above the Arc) -->
-  <div class="relative z-20 mx-auto w-full max-w-4xl px-4 sm:px-6 pt-3 sm:pt-3 pb-1 text-center flex flex-col items-center shrink-0">
+  <div class="relative z-20 mx-auto w-full max-w-4xl px-4 sm:px-6 pt-2.5 sm:pt-3 pb-1 text-center flex flex-col items-center shrink-0">
     <!-- Kicker Tag -->
     <div
-      class="inline-flex items-center gap-2 rounded-full border border-[#A5A79B]/28 bg-[#15171C]/75 backdrop-blur-md px-3 py-0.5 text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.18em] sm:tracking-[0.2em] text-[#E8D2B5] mb-2"
+      class="inline-flex items-center gap-2 rounded-full border border-[#A5A79B]/28 bg-[#15171C]/75 backdrop-blur-md px-3 py-0.5 text-[9.5px] sm:text-[10px] font-mono uppercase tracking-[0.16em] sm:tracking-[0.2em] text-[#E8D2B5] mb-2"
     >
       <span class="h-1.5 w-1.5 rounded-full bg-[#7D1110]" aria-hidden="true"></span>
-      <span>{SHOWCASE_META.kicker}</span>
+      <span class="sm:hidden">Senior Editor · Kozhikode</span>
+      <span class="hidden sm:inline">{SHOWCASE_META.kicker}</span>
     </div>
 
     <!-- Primary Headline -->
     <h1
-      class="font-sans font-bold tracking-[-0.02em] leading-[1.12] sm:leading-[1.08] text-[#E8D2B5] max-w-4xl"
-      style="font-size: clamp(1.5rem, min(5.4vw, 4.7dvh), 3rem);"
+      class="font-sans font-bold tracking-[-0.02em] leading-[1.1] sm:leading-[1.08] text-[#E8D2B5] max-w-4xl"
+      style="font-size: clamp(1.38rem, min(5.8vw, 4.2dvh), 3rem);"
     >
       {SHOWCASE_META.headline}
     </h1>
 
     <!-- Subheadline -->
-    <p class="mt-2 max-w-2xl text-xs sm:text-sm text-[#A5A79B] leading-relaxed">
+    <p class="mt-1.5 sm:mt-2 max-w-[340px] sm:max-w-2xl text-xs sm:text-sm text-[#A5A79B] leading-snug sm:leading-relaxed">
       {SHOWCASE_META.subheadline}
     </p>
 
     <!-- CTA Row -->
-    <div class="mt-3 sm:mt-3.5 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+    <div class="mt-2.5 sm:mt-3.5 w-full sm:w-auto flex flex-wrap items-center justify-center gap-2 sm:gap-3">
       <a
         href={SHOWCASE_META.whatsappHref}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-[#590907] hover:bg-[#7D1110] border border-[#E8D2B5]/20 px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold tracking-wide text-[#E8D2B5] shadow-[0_10px_28px_rgba(89,9,7,0.55)] transition-all hover:-translate-y-0.5"
+        class="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-[#590907] hover:bg-[#7D1110] border border-[#E8D2B5]/20 px-4 sm:px-5 py-2 text-[11.5px] sm:text-sm font-semibold tracking-wide text-[#E8D2B5] shadow-[0_10px_28px_rgba(89,9,7,0.55)] transition-all hover:-translate-y-0.5"
       >
         <span>Book an Edit</span>
         <span aria-hidden="true">↗</span>
@@ -151,7 +152,7 @@ const dustParticles = [
         href={SHOWCASE_META.portfolioUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full border border-[#A5A79B]/35 hover:border-[#E8D2B5]/75 bg-[#15171C]/55 backdrop-blur-md px-4 sm:px-5 py-2 text-xs sm:text-sm font-medium tracking-wide text-[#E8D2B5] transition-all hover:-translate-y-0.5"
+        class="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full border border-[#A5A79B]/35 hover:border-[#E8D2B5]/75 bg-[#15171C]/55 backdrop-blur-md px-4 sm:px-5 py-2 text-[11.5px] sm:text-sm font-medium tracking-wide text-[#E8D2B5] transition-all hover:-translate-y-0.5"
       >
         <span>Full Portfolio / Resume</span>
         <span aria-hidden="true" class="text-[#A5A79B]">↗</span>
@@ -163,7 +164,7 @@ const dustParticles = [
   <div
     id="rolling-arc-region"
     data-unique-count={cuts.length}
-    class="relative z-20 w-full flex-1 min-h-[232px] sm:min-h-[210px] flex items-center justify-center overflow-hidden my-1 sm:my-0"
+    class="relative z-20 w-full flex-1 min-h-[205px] flex flex-col items-center justify-center overflow-hidden my-0.5 sm:my-0"
   >
     <!-- Side Gradient Fades into Obsidian -->
     <div
@@ -178,7 +179,7 @@ const dustParticles = [
     <!-- 3D Perspective Stage -->
     <div
       id="rolling-arc-stage"
-      class="showcase-arc-stage relative w-full h-[236px] sm:h-[clamp(205px,37dvh,320px)] cursor-grab active:cursor-grabbing touch-pan-y"
+      class="showcase-arc-stage relative w-full h-[clamp(205px,34dvh,340px)] sm:h-[clamp(205px,37dvh,320px)] cursor-grab active:cursor-grabbing touch-pan-y"
       role="region"
       aria-label="Rolling 3D curved video showcase"
     >
@@ -200,14 +201,14 @@ const dustParticles = [
             data-stream-url={cut.streamUrl}
             data-preview-url={cut.previewUrl}
             aria-label={`Play ${cut.title} (${cut.badgeLabel}, ${cut.duration})`}
-            class="showcase-arc-card group w-[152px] h-[212px] sm:w-[clamp(142px,22.5dvh,202px)] sm:h-[clamp(196px,31dvh,278px)] rounded-2xl border border-[#A5A79B]/22 bg-[#141517] overflow-hidden text-left shadow-[0_18px_46px_rgba(0,0,0,0.82)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8D2B5]"
+            class="showcase-arc-card group w-[clamp(154px,44vw,224px)] h-[clamp(192px,31dvh,310px)] sm:w-[clamp(142px,22.5dvh,202px)] sm:h-[clamp(196px,31dvh,278px)] rounded-2xl border border-[#A5A79B]/22 bg-[#141517] overflow-hidden text-left shadow-[0_18px_46px_rgba(0,0,0,0.82)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8D2B5]"
           >
             {/* Lightweight Astro-Optimized WebP Poster (Zero Video Preload) */}
             <Image
               src={cut.thumbnail}
               alt={`${cut.title} — ${cut.badgeLabel} thumbnail`}
               widths={[320, 480]}
-              sizes="(max-width: 640px) 160px, 220px"
+              sizes="(max-width: 640px) 220px, 220px"
               format="webp"
               loading={idx < 8 ? 'eager' : 'lazy'}
               decoding="async"
@@ -222,8 +223,8 @@ const dustParticles = [
             ></div>
 
             {/* Top Badges: Category & Duration Timecode */}
-            <div class="pointer-events-none absolute top-2 inset-x-2 flex items-center justify-between gap-1">
-              <span class="rounded-full border border-[#A5A79B]/35 bg-[#0C0D10]/78 backdrop-blur-sm px-1.5 sm:px-2 py-0.5 text-[8.5px] sm:text-[9px] font-medium uppercase tracking-wide text-[#E8D2B5] whitespace-nowrap">
+            <div class="pointer-events-none absolute top-2.5 inset-x-2.5 flex items-center justify-between gap-1">
+              <span class="rounded-full border border-[#A5A79B]/35 bg-[#0C0D10]/78 backdrop-blur-sm px-2 py-0.5 text-[8.5px] sm:text-[9px] font-medium uppercase tracking-wide text-[#E8D2B5] whitespace-nowrap">
                 {cut.badgeLabel}
               </span>
               <span class="rounded border border-[#A5A79B]/25 bg-[#0C0D10]/80 backdrop-blur-sm px-1.5 py-0.5 font-mono text-[9px] sm:text-[10px] text-[#E8D2B5] tabular-nums shrink-0">
@@ -236,7 +237,7 @@ const dustParticles = [
               class="pointer-events-none absolute inset-0 flex items-center justify-center"
               aria-hidden="true"
             >
-              <span class="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#0C0D10]/55 group-hover:bg-[#7D1110]/90 border border-[#E8D2B5]/45 group-hover:border-[#E8D2B5]/80 text-[#E8D2B5] backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.65)] transition-all duration-200 group-hover:scale-110">
+              <span class="flex items-center justify-center w-11 h-11 rounded-full bg-[#0C0D10]/55 group-hover:bg-[#7D1110]/90 border border-[#E8D2B5]/45 group-hover:border-[#E8D2B5]/80 text-[#E8D2B5] backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.65)] transition-all duration-200 group-hover:scale-110">
                 <svg viewBox="0 0 24 24" class="w-4 h-4 ml-0.5 fill-current">
                   <path d="M8 5.14v14l11-7-11-7z" />
                 </svg>
@@ -245,10 +246,11 @@ const dustParticles = [
 
             {/* Bottom Cut Title */}
             <div class="pointer-events-none absolute bottom-0 inset-x-0 p-2.5 sm:p-3">
-              <p class="font-mono text-[9px] uppercase tracking-wider text-[#A5A79B] truncate">
-                {cut.client} · {cut.aspect}
+              <p class="flex items-center justify-between gap-1.5 font-mono text-[9px] uppercase tracking-wider text-[#A5A79B]">
+                <span class="truncate">{cut.client}</span>
+                <span class="shrink-0 text-[#E8D2B5]/75">{cut.aspect}</span>
               </p>
-              <h2 class="mt-0.5 text-[11px] sm:text-xs font-semibold text-[#E8D2B5] leading-snug line-clamp-2">
+              <h2 class="mt-0.5 text-xs font-semibold text-[#E8D2B5] leading-snug line-clamp-2">
                 {cut.title}
               </h2>
             </div>
@@ -256,24 +258,30 @@ const dustParticles = [
         ))
       }
     </div>
+
+    <p class="sm:hidden mt-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-[#A5A79B]/80">
+      Swipe or tap any cut to stream
+    </p>
   </div>
 
   <!-- E. BOTTOM CONTACT & PORTFOLIO STRIP -->
-  <footer class="relative z-30 mx-auto w-full max-w-[1380px] px-3 sm:px-6 pb-3 pt-1 shrink-0">
+  <footer class="relative z-30 mx-auto w-full max-w-[1380px] px-3 sm:px-6 pb-2.5 sm:pb-3 pt-0.5 shrink-0">
     <div
-      class="rounded-2xl lg:rounded-full border border-[#A5A79B]/20 bg-[#121317]/78 backdrop-blur-xl px-3.5 sm:px-5 py-2.5 sm:py-2 flex flex-col lg:flex-row items-center justify-between gap-2.5 lg:gap-4"
+      class="rounded-2xl lg:rounded-full border border-[#A5A79B]/20 bg-[#121317]/78 backdrop-blur-xl px-3 sm:px-5 py-2 flex flex-col lg:flex-row items-center justify-between gap-2 lg:gap-4"
     >
       <!-- Service Badges -->
-      <div class="w-full lg:w-auto flex flex-wrap items-center justify-center lg:justify-start gap-1.5 sm:gap-2">
+      <div class="w-full lg:w-auto flex flex-wrap items-center justify-center lg:justify-start gap-1 sm:gap-2">
         {
           SHOWCASE_SERVICES.map((svc) => (
-            <span class="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#A5A79B]/22 bg-[#0C0D10]/70 px-2.5 sm:px-3 py-1 text-[10px] sm:text-[11px] text-[#E8D2B5] tracking-wide">
+            <span class="shrink-0 inline-flex items-center gap-1 sm:gap-1.5 rounded-full border border-[#A5A79B]/22 bg-[#0C0D10]/70 px-2 sm:px-3 py-0.5 sm:py-1 text-[9.5px] sm:text-[11px] text-[#E8D2B5] tracking-wide">
               <span aria-hidden="true">{svc.icon}</span>
               <span>{svc.label}</span>
             </span>
           ))
         }
       </div>
+
+      <div class="w-full h-px bg-[#A5A79B]/12 lg:hidden" aria-hidden="true"></div>
 
       <!-- Contact & Full Portfolio Links -->
       <div class="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4 gap-y-1.5 text-[11px] sm:text-xs">
@@ -533,6 +541,12 @@ const dustParticles = [
       window.setTimeout(() => {
         dragTravel = 0;
       }, 60);
+    });
+
+    window.addEventListener('pointercancel', () => {
+      isDragging = false;
+      pressedCard = null;
+      dragTravel = 0;
     });
 
     // Horizontal Wheel / Trackpad Scrub
